@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Layout Test</title>
+  <meta name="description" content="UW student layout design test." />
+
+  <link rel="stylesheet" href="styles.css?v=999" />
+
+  <!-- Performance: connection warmup -->
+  <link rel="preconnect" href="https://images.rawpixel.com" crossorigin />
+  <link rel="preconnect" href="https://skybygramophone.com" crossorigin />
+
+  <!-- Preload the main hero image -->
+  <link
+    rel="preload"
+    as="image"
+    href="https://skybygramophone.com/cdn/shop/files/Z99oU6kQ_f2b2643e-0b29-44c6-8a4c-7b56b15197df_large.png?v=1757520807"
+    fetchpriority="high"
+  />
+
+  <noscript>
+    <style>
+      .record-spin img,
+      .hero-media img { animation: none !important; }
+    </style>
+  </noscript>
+</head>
+
+<body>
+
+  <main id="main">
+    <section class="hero" aria-label="Hero layout demo">
+      <div class="hero-card">
+
+        <!-- background shapes (global) -->
+        <div class="shape shape--blob" aria-hidden="true"></div>
+        <div class="shape shape--circle" aria-hidden="true"></div>
+        <div class="shape shape--dot" aria-hidden="true"></div>
+
+        <!-- main media -->
+        <figure class="hero-media">
+
+  <!-- ring (LOCKED to record center) -->
+  <div class="shape shape--ring" aria-hidden="true"></div>
+
+  <!-- spinning record -->
+  <div class="record-spin" aria-hidden="true">
+    <img
+      src="https://us.rarevinyl.com/cdn/shop/files/turnstile-glow-on-baby-pink-vinyl-us-vinyl-lp-album-record-0u1lpgl835586-835586b_1000x1013.jpg?v=1714735825"
+      alt=""
+      decoding="async"
+      loading="eager"
+    />
+  </div>
+
+  <!-- turntable image -->
+  <img
+    src="https://skybygramophone.com/cdn/shop/files/Z99oU6kQ_f2b2643e-0b29-44c6-8a4c-7b56b15197df_large.png?v=1757520807"
+    alt="Turntable product image"
+    decoding="async"
+    loading="eager"
+    fetchpriority="high"
+  />
+</figure>
+
+        <!-- text -->
+        <div class="hero-content">
+          <h1>HTML / CSS TEST</h1>
+          <p class="kicker">UW student layout study.</p>
+<p class="desc">
+  A motion-focused layout built with only HTML and CSS. No AI animation tools—just subtle pulses and micro-movement to explore structure, layering, and intentional design.
+</p>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>
