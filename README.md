@@ -1,5 +1,3 @@
-# frontend-ui-experiments
-
 # Frontend UI Experiments
 
 A curated collection of small front-end studies, layout labs, and visual interface experiments built while learning and refining HTML, CSS, and JavaScript fundamentals.
