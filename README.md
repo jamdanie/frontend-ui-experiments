@@ -9,8 +9,8 @@ A curated collection of small front-end studies, layout labs, and visual interfa
 | Project | Live Demo |
 |--------|-----------|
 | Dark Premium Portfolio | https://jamdanie.github.io/frontend-ui-experiments/dark-premium-portfolio/ |
-| UI Layout Lab | https://jamdanie.github.io/frontend-ui-experiments/ui-layout-lab/ |
-| Mecha UI Study | https://jamdanie.github.io/frontend-ui-experiments/mecha-ui-study/ |
+| Layout Practice | https://jamdanie.github.io/frontend-ui-experiments/layout-practice/ |
+| Mecha UI Concept | https://jamdanie.github.io/frontend-ui-experiments/mecha-ui-concept/ |
 | RidgeRelay UI Prototype | https://jamdanie.github.io/frontend-ui-experiments/ridge-relay-ui-prototype/ |
 
 Click any demo above to view the project.
