@@ -1,0 +1,32 @@
+# RidgeRelay — Project Brief
+
+This project is evaluated on design reasoning, safety tradeoffs, privacy considerations, and clarity of intent modeling—not on production readiness.
+
+## Goal
+Design a privacy-first safety platform concept that supports intent-aware monitoring, offline-first use, and predictable escalation for remote outdoor activity.
+
+## Users
+Hikers, trail runners, hunters, backcountry skiers/snowboarders, solo outdoor users.
+
+## Key Constraints
+- Low/no connectivity
+- Battery limitations
+- Privacy and consent requirements
+- High cost of false alarms vs missed alerts
+
+## Proposed Solution (High Level)
+- Intent-based trip plan (route + timing + planned stops)
+- Guardrails (corridor + stay/no-go zones)
+- Intent-aware notifications
+- Offline maps + probable service zones overlay
+- Anonymous occupancy + opt-in crowd assist
+- Staged escalation + emergency profile disclosure only on escalation
+
+## What This Repo Contains
+Static wireframe prototype (HTML/CSS/JS). No backend, GPS, or real dispatch integration.
+ 
+## Success Criteria (Concept-Level)
+- Reduces false alarms via intent modeling
+- Preserves user privacy via session-limited permissions
+- Makes escalation transparent and predictable
+- Demonstrates realistic low-signal design considerations

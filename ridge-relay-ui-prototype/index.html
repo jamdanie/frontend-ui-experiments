@@ -1,0 +1,493 @@
+<!doctype html>
+
+<!--
+=========================================================
+RidgeRelay — Intent-Aware Outdoor Safety (Wireframe)
+---------------------------------------------------------
+FILE: index.html
+
+PURPOSE:
+- Defines the structure and flow of the RidgeRelay prototype
+- Demonstrates safety-first UX patterns for low-signal environments
+- Serves as a clickable, frontend-only concept model
+
+DESIGN PRINCIPLES:
+- Intent-aware (not deadline-based)
+- Session-limited (not always-on)
+- Privacy-first (no PII exposure)
+- Calm, non-alarming UX
+
+NON-GOALS:
+- No real GPS tracking
+- No backend or persistence
+- No real emergency dispatch
+
+DEV NOTE:
+- Developer grid overlay exists for layout tuning.
+- Enable it with: ?dev=1  (example: /RidgeRelay/?dev=1)
+- Toggle it with: G
+=========================================================
+-->
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RIDGERELAY — Wireframe</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body>
+  <!--
+    INTRO GATE (Video)
+    -------------------------------------------------------
+    GOAL:
+    - Plays a short brand/atmosphere clip BEFORE entering the site.
+    - Dismisses on ANY interaction (click/tap/scroll/key).
+    - Only shows once per browser (localStorage).
+
+    IMPORTANT (Autoplay Rules):
+    - Autoplay generally requires video to be MUTED.
+    - We set muted + playsinline so it works on mobile.
+
+    ASSET:
+    - Put your mp4 at: assets/intro.mp4
+  -->
+  <div id="introGate" class="intro-gate" aria-label="RidgeRelay intro video">
+    <video
+      id="introVideo"
+      class="intro-video"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    >
+      <source src="assets/intro.mp4" type="video/mp4" />
+      <!-- Fallback text if video cannot play -->
+      Your browser does not support the intro video.
+    </video>
+
+    <!-- Subtle overlay so it feels intentional and not like a raw file -->
+    <div class="intro-overlay" aria-hidden="true"></div>
+
+    <!-- Minimal hint (still dismisses on ANY input) -->
+    <div class="intro-hint" aria-hidden="true">
+      Enter RidgeRelay
+      <span class="intro-subhint">Click • Tap • Scroll • Any key</span>
+    </div>
+  </div>
+
+  <!--
+    BACKGROUND: Topo Split (Tan + Orange)
+    ------------------------------------
+    PURPOSE:
+    - Non-interactive decorative layer for the "No 3 / orange-tan topo" themes.
+    - Implemented in CSS as a low-attention background image overlay.
+    - Pointer-events disabled so it never blocks UI interactions.
+
+    NOTE:
+    - This is just the hook. The image path + styling lives in styles.css.
+  -->
+  <div class="bg-topo-split" aria-hidden="true"></div>
+
+  <!-- Reference-style coordinate callout (kept readable above background) -->
+  <div class="bg-coords" aria-hidden="true">
+    122.44°W<br/>
+    47.24°N
+  </div>
+
+  <!-- Optional readability layer (keeps the UI readable over the topo) -->
+  <div class="bg-vignette" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <!--
+        HEADER LOGO (Crisp + readable at small size)
+        --------------------------------------------
+        The detailed RR icon looks great large, but collapses at 44x44.
+        So the header uses a clean monogram mark for instant recognition.
+      -->
+      <div class="logo logo--mono" aria-label="RidgeRelay logo">
+        <span class="logo-mono" aria-hidden="true">RR</span>
+      </div>
+
+      <div class="brandtext">
+        <div class="name">RIDGERELAY</div>
+        <div class="tag">Intent-aware safety for low-signal outdoor activities</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn ghost" data-nav="screen-notifications">View Notifications</button>
+      <button class="btn primary" data-nav="screen-active">Go to Active Trip</button>
+
+      <!-- If you ever want a button toggle instead of keyboard:
+      <button class="btn ghost" id="btnGrid">Toggle Grid</button>
+      -->
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="section-title">Wireframe Screens</div>
+
+      <nav class="nav">
+        <button class="navitem active" data-nav="screen-home">Home</button>
+        <button class="navitem" data-nav="screen-plan">Plan Trip</button>
+        <button class="navitem" data-nav="screen-boundary">Boundary Guardrails</button>
+        <button class="navitem" data-nav="screen-emergency">Emergency Profile</button>
+        <button class="navitem" data-nav="screen-active">Active Trip</button>
+        <button class="navitem" data-nav="screen-notifications">Notifications</button>
+        <button class="navitem" data-nav="screen-escalation">Escalation</button>
+      </nav>
+
+      <div class="divider"></div>
+
+      <div class="section-title">Flow Shortcuts</div>
+      <div class="chips">
+        <button class="chip" data-flow="startTrip">Start Trip Flow</button>
+        <button class="chip" data-flow="lostSignal">Lost Signal Flow</button>
+        <button class="chip" data-flow="crowdAssist">Crowd Assist Flow</button>
+      </div>
+
+      <div class="hint">
+        Tip: This is a wireframe demo. Buttons simulate states; no real GPS.
+      </div>
+    </aside>
+
+    <section class="content">
+      <!-- =========================
+        SCREEN: HOME
+        ========================== -->
+      <article class="screen show" id="screen-home" aria-label="Home Screen">
+        <div class="screen-head">
+          <h1>Home</h1>
+          <p class="muted">A privacy-first “flight plan” + safety layer for trails and backcountry.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h2>Start a Trip</h2>
+            <p class="muted">Choose a trail, declare intent, and enable session-based safety monitoring.</p>
+            <button class="btn primary" data-nav="screen-plan">Plan a Trip</button>
+          </div>
+
+          <div class="card">
+            <h2>Offline & Low Signal</h2>
+            <p class="muted">Download maps and view probable cell-service zones to guide emergency calls.</p>
+            <button class="btn ghost" data-nav="screen-active">Preview Active Trip</button>
+          </div>
+
+          <div class="card">
+            <h2>Anonymous Crowd Awareness</h2>
+            <p class="muted">See occupancy by trail segment without revealing identity or PII.</p>
+            <button class="btn ghost" data-nav="screen-notifications">See Crowd Assist</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- =========================
+        SCREEN: PLAN TRIP
+        ========================== -->
+      <article class="screen" id="screen-plan" aria-label="Plan Trip Screen">
+        <div class="screen-head">
+          <h1>Plan Trip</h1>
+          <p class="muted">Select a trail and declare intent. This reduces false alarms.</p>
+        </div>
+
+        <div class="card">
+          <div class="form-row">
+            <label>Trail</label>
+            <select id="trailSelect">
+              <option>Rattlesnake Ledge (Example)</option>
+              <option>Point Defiance Loop (Example)</option>
+              <option>Custom Route (Draw)</option>
+            </select>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Trail Estimated Time</label>
+              <input type="text" value="2h 30m" />
+            </div>
+
+            <div class="form-row">
+              <label>Your Anticipated Time</label>
+              <input type="text" value="3h 15m" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Planned Stops</label>
+            <div class="pills">
+              <span class="pill">Rest</span>
+              <span class="pill">Photography</span>
+              <span class="pill">Wildlife Viewing</span>
+              <button class="pill add" type="button">+ Add</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="check">
+              <input type="checkbox" id="optCrowdAssist" checked />
+              Allow anonymous Crowd Assist notification if I go offline
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn ghost" data-nav="screen-home">Back</button>
+            <button class="btn primary" data-nav="screen-boundary">Next: Guardrails</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- =========================
+        SCREEN: BOUNDARY GUARDRAILS
+        ========================== -->
+      <article class="screen" id="screen-boundary" aria-label="Boundary Guardrails Screen">
+        <div class="screen-head">
+          <h1>Boundary Guardrails</h1>
+          <p class="muted">Define the corridor you intend to stay within (and optional zones).</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h2>Trail Corridor</h2>
+            <p class="muted">Auto-buffer around route (example).</p>
+            <div class="mapbox">
+              <div class="maphint">[Map Placeholder]</div>
+              <div class="legend">
+                <span class="dot"></span> Route
+                <span class="dot alt"></span> Corridor
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Zones</h2>
+            <p class="muted">Optional stay zones / no-go zones.</p>
+            <div class="zone-list">
+              <div class="zone">
+                <div class="ztitle">Stay Zone: Viewpoint</div>
+                <div class="muted">Up to 25m linger allowed</div>
+              </div>
+              <div class="zone">
+                <div class="ztitle">No-Go: Steep Ridge</div>
+                <div class="muted">Avoid this area</div>
+              </div>
+              <button class="btn ghost small" type="button">+ Add Zone</button>
+            </div>
+
+            <div class="actions">
+              <button class="btn ghost" data-nav="screen-plan">Back</button>
+              <button class="btn primary" data-nav="screen-emergency">Next: Emergency Profile</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- =========================
+        SCREEN: EMERGENCY PROFILE
+        ========================== -->
+      <article class="screen" id="screen-emergency" aria-label="Emergency Profile Screen">
+        <div class="screen-head">
+          <h1>Emergency Profile</h1>
+          <p class="muted">Opt-in info shared only during escalation.</p>
+        </div>
+
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Primary Contact (POC)</label>
+              <input type="text" placeholder="Name + Phone" value="Alex — (555) 555-5555" />
+            </div>
+            <div class="form-row">
+              <label>Secondary Contact</label>
+              <input type="text" placeholder="Optional" />
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-row">
+              <label>Trailhead / Parking Notes</label>
+              <input type="text" value="Blue Subaru — Lot A" />
+            </div>
+            <div class="form-row">
+              <label>Medical Notes (optional)</label>
+              <input type="text" placeholder="Allergies, meds, etc." />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn ghost" data-nav="screen-boundary">Back</button>
+            <button class="btn primary" data-nav="screen-active">Start Trip</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- =========================
+        SCREEN: ACTIVE TRIP
+        ========================== -->
+      <article class="screen" id="screen-active" aria-label="Active Trip Screen">
+        <div class="screen-head">
+          <h1>Active Trip</h1>
+          <p class="muted">Session-based monitoring • Offline-first • Privacy-preserving</p>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h2>Status</h2>
+            <div class="status">
+              <span class="badge ok" id="statusBadge">On Route</span>
+              <span class="muted" id="statusDetail">Pings adapting to signal & battery.</span>
+            </div>
+
+            <div class="mini">
+              <div class="minirow">
+                <span class="muted">Trail occupancy:</span>
+                <strong>~7 active hikers</strong>
+              </div>
+              <div class="minirow">
+                <span class="muted">Connectivity zones:</span>
+                <strong>Nearby ridge likely better</strong>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn ghost" id="btnBoundary" type="button">Simulate Boundary Cross</button>
+              <button class="btn ghost" id="btnInactivity" type="button">Simulate Inactivity</button>
+              <button class="btn ghost" id="btnOffline" type="button">Simulate Lost Signal</button>
+              <button class="btn danger" id="btnSOS" type="button">SOS</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Offline Map</h2>
+            <p class="muted">Downloaded pack: route + exits + service probability overlay.</p>
+            <div class="mapbox">
+              <div class="maphint">[Offline Map Placeholder]</div>
+              <div class="legend">
+                <span class="dot"></span> Route
+                <span class="dot alt2"></span> Likely Service Zone
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Recent Events</h2>
+          <div class="feed" id="eventFeed">
+            <div class="feeditem"><span class="time">Now</span> Trip started. Monitoring enabled for this session.</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- =========================
+        SCREEN: NOTIFICATIONS
+        ========================== -->
+      <article class="screen" id="screen-notifications" aria-label="Notifications Screen">
+        <div class="screen-head">
+          <h1>Notification Examples</h1>
+          <p class="muted">Progressive nudges → check-ins → escalation (transparent).</p>
+        </div>
+
+        <div class="grid">
+          <div class="card notif">
+            <h2>Boundary Nudge</h2>
+            <div class="toast">
+              <div class="toast-title">Did you mean to cross your boundary?</div>
+              <div class="toast-body">You’re outside your trail corridor near Junction B.</div>
+              <div class="toast-actions">
+                <button class="btn small" type="button">Intentional</button>
+                <button class="btn ghost small" type="button">Return</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card notif">
+            <h2>Hazard Alert (Verified)</h2>
+            <div class="toast">
+              <div class="toast-title">Confirmed animal sighting nearby</div>
+              <div class="toast-body">Photo-verified report 0.4 miles ahead (15m ago).</div>
+              <div class="toast-actions">
+                <button class="btn small" type="button">View</button>
+                <button class="btn ghost small" type="button">Dismiss</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card notif">
+            <h2>Status Check</h2>
+            <div class="toast">
+              <div class="toast-title">Are you still active?</div>
+              <div class="toast-body">No movement detected for 25 minutes.</div>
+              <div class="toast-actions">
+                <button class="btn small" type="button">I’m OK</button>
+                <button class="btn ghost small" type="button">Still Resting</button>
+                <button class="btn danger small" type="button">Need Help</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card notif">
+            <h2>Crowd Assist (Opt-In)</h2>
+            <div class="toast">
+              <div class="toast-title">Safety check request</div>
+              <div class="toast-body">A device stopped updating near Junction B at 2:14 PM. If you pass, confirm conditions.</div>
+              <div class="toast-actions">
+                <button class="btn small" type="button">Area Normal</button>
+                <button class="btn ghost small" type="button">Hazard Seen</button>
+                <button class="btn danger small" type="button">Possible Distress</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- =========================
+        SCREEN: ESCALATION
+        ========================== -->
+      <article class="screen" id="screen-escalation" aria-label="Escalation Screen">
+        <div class="screen-head">
+          <h1>Escalation Logic</h1>
+          <p class="muted">The system asks first, then escalates based on risk and non-response.</p>
+        </div>
+
+        <div class="card">
+          <h2>Stages</h2>
+          <ol class="steps">
+            <li><strong>Nudge:</strong> boundary or hazard warning</li>
+            <li><strong>Check-in:</strong> “Are you still active?”</li>
+            <li><strong>Intent mismatch:</strong> prolonged inactivity + deviation + offline</li>
+            <li><strong>Notify POC:</strong> last known location + time + trail segment</li>
+            <li><strong>Responder handoff (Phase 3):</strong> verified partnerships only</li>
+          </ol>
+
+          <div class="callout">
+            Privacy note: No identity is shown to other users; emergency profile is shared only during escalation.
+          </div>
+
+          <div class="actions">
+            <button class="btn ghost" data-nav="screen-active">Back to Active Trip</button>
+          </div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- =========================
+    DEV GRID OVERLAY (Layout Debug)
+    - Only appears in dev mode (?dev=1) when toggled with "G"
+    - Labels show A–X columns and 1–24 rows
+    ========================== -->
+  <div class="grid-overlay" data-dev-only="true" aria-hidden="true">
+    <div class="grid-labels grid-labels-top"></div>
+    <div class="grid-labels grid-labels-bottom"></div>
+    <div class="grid-labels grid-labels-left"></div>
+  </div>
+  <div class="grid-badge" data-dev-only="true" aria-hidden="true">Grid: ON (G)</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
