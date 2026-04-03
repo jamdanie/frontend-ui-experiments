@@ -28,9 +28,15 @@ gsap.ticker.lagSmoothing(0);
 
 initCursor();
 
-const heroScene = await createHeroScene({
-  canvas: document.getElementById("webgl"),
-  modelUrl: "/model/console.glb"
-});
+async function initApp() {
+  const heroScene = await createHeroScene({
+    canvas: document.getElementById("webgl"),
+    modelUrl: "/model/console.glb"
+  });
 
-createHeroScroll(heroScene);
+  createHeroScroll(heroScene);
+}
+
+initApp().catch((error) => {
+  console.error("Failed to initialize app:", error);
+});
