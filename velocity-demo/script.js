@@ -80,13 +80,6 @@ loader.load(
     model = gltf.scene;
     modelGroup.add(model);
 
-    model.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = false;
-        child.receiveShadow = false;
-      }
-    });
-
     model.scale.set(2.3, 2.3, 2.3);
     model.position.set(1.15, -0.15, 0);
     model.rotation.set(0.18, -0.72, -0.16);
