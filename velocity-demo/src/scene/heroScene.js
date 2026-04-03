@@ -18,7 +18,7 @@ export async function createHeroScene({ canvas, modelUrl }) {
   renderer.toneMappingExposure = 1.15;
 
   const camera = new THREE.PerspectiveCamera(
-    32,
+    30,
     window.innerWidth / window.innerHeight,
     0.1,
     100
@@ -27,18 +27,18 @@ export async function createHeroScene({ canvas, modelUrl }) {
   const modelRig = new THREE.Group();
   scene.add(modelRig);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 1.6);
+  const ambient = new THREE.AmbientLight(0xffffff, 1.65);
   scene.add(ambient);
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.8);
+  const key = new THREE.DirectionalLight(0xffffff, 3.0);
   key.position.set(4, 5, 8);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xcfd6ff, 1.3);
+  const fill = new THREE.DirectionalLight(0xcfd6ff, 1.1);
   fill.position.set(-6, 1, 6);
   scene.add(fill);
 
-  const rim = new THREE.DirectionalLight(0xffffff, 2.0);
+  const rim = new THREE.DirectionalLight(0xffffff, 1.9);
   rim.position.set(-5, 3, -5);
   scene.add(rim);
 
@@ -56,27 +56,30 @@ export async function createHeroScene({ canvas, modelUrl }) {
     modelRig,
     model,
     scrollProgress: 0,
-    baseRotationX: 0.08,
-    baseRotationY: -0.28,
+    baseRotationX: 0.06,
+    baseRotationY: -0.22,
     baseScale: 1,
     targetMouseX: 0,
     targetMouseY: 0,
     smoothMouseX: 0,
-    smoothMouseY: 0
+    smoothMouseY: 0,
+    minYaw: -0.34,
+    maxYaw: 0.12
   };
 
   fitModelToView(state);
   updateCamera(state);
 
-  model.rotation.set(state.baseRotationX, state.baseRotationY, 0.02);
+  model.rotation.set(state.baseRotationX, state.baseRotationY, 0.015);
 
   const clock = new THREE.Clock();
 
   window.addEventListener("mousemove", (event) => {
     const x = event.clientX / window.innerWidth;
     const y = event.clientY / window.innerHeight;
-    state.targetMouseX = (x - 0.5) * 0.16;
-    state.targetMouseY = (y - 0.5) * 0.1;
+
+    state.targetMouseX = (x - 0.5) * 0.08;
+    state.targetMouseY = (y - 0.5) * 0.045;
   });
 
   window.addEventListener("resize", () => {
@@ -89,24 +92,26 @@ export async function createHeroScene({ canvas, modelUrl }) {
     state.smoothMouseX += (state.targetMouseX - state.smoothMouseX) * 0.05;
     state.smoothMouseY += (state.targetMouseY - state.smoothMouseY) * 0.05;
 
-    state.modelRig.position.y = Math.sin(elapsed * 0.42) * 0.03;
+    state.modelRig.position.y = Math.sin(elapsed * 0.42) * 0.02;
 
-    const idleY = Math.sin(elapsed * 0.32) * 0.03;
-    const idleX = Math.cos(elapsed * 0.25) * 0.01;
+    const idleY = Math.sin(elapsed * 0.28) * 0.015;
+    const idleX = Math.cos(elapsed * 0.22) * 0.006;
 
-    const targetRotY =
+    let targetRotY =
       state.baseRotationY +
-      state.scrollProgress * 0.55 +
+      state.scrollProgress * 0.18 +
       idleY +
       state.smoothMouseX;
 
+    targetRotY = THREE.MathUtils.clamp(targetRotY, state.minYaw, state.maxYaw);
+
     const targetRotX =
       state.baseRotationX +
-      state.scrollProgress * 0.06 +
+      state.scrollProgress * 0.02 +
       idleX -
       state.smoothMouseY;
 
-    const targetRotZ = state.smoothMouseX * 0.08;
+    const targetRotZ = state.smoothMouseX * 0.03;
 
     state.model.rotation.y += (targetRotY - state.model.rotation.y) * 0.05;
     state.model.rotation.x += (targetRotX - state.model.rotation.x) * 0.05;
@@ -132,10 +137,10 @@ function refineMaterials(root) {
       }
 
       if ("metalness" in child.material && child.material.metalness !== undefined) {
-        child.material.metalness = Math.max(child.material.metalness, 0.15);
+        child.material.metalness = Math.max(child.material.metalness, 0.12);
       }
 
-      child.material.envMapIntensity = 1.25;
+      child.material.envMapIntensity = 1.2;
     }
   });
 }
@@ -151,25 +156,25 @@ function fitModelToView(state) {
   state.model.position.sub(center);
 
   const maxDim = Math.max(size.x, size.y, size.z) || 1;
-  const desired = window.innerWidth < 768 ? 4.4 : 5.8;
+  const desired = window.innerWidth < 768 ? 4.9 : 6.2;
 
   state.baseScale = desired / maxDim;
   state.model.scale.setScalar(state.baseScale);
-  state.model.position.y -= size.y * state.baseScale * 0.06;
+  state.model.position.y -= size.y * state.baseScale * 0.045;
 }
 
 function updateCamera(state) {
   state.camera.aspect = window.innerWidth / window.innerHeight;
 
   if (window.innerWidth < 560) {
-    state.camera.fov = 36;
-    state.camera.position.set(0, 0.08, 9.8);
-  } else if (window.innerWidth < 900) {
     state.camera.fov = 34;
-    state.camera.position.set(0, 0.12, 9.1);
-  } else {
+    state.camera.position.set(0, 0.06, 9.4);
+  } else if (window.innerWidth < 900) {
     state.camera.fov = 32;
-    state.camera.position.set(0, 0.16, 8.5);
+    state.camera.position.set(0, 0.1, 8.9);
+  } else {
+    state.camera.fov = 30;
+    state.camera.position.set(0, 0.12, 8.1);
   }
 
   state.camera.updateProjectionMatrix();
