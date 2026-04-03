@@ -15,10 +15,10 @@ export async function createHeroScene({ canvas, modelUrl }) {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.12;
 
   const camera = new THREE.PerspectiveCamera(
-    30,
+    28,
     window.innerWidth / window.innerHeight,
     0.1,
     100
@@ -27,18 +27,18 @@ export async function createHeroScene({ canvas, modelUrl }) {
   const modelRig = new THREE.Group();
   scene.add(modelRig);
 
-  const ambient = new THREE.AmbientLight(0xffffff, 1.65);
+  const ambient = new THREE.AmbientLight(0xffffff, 1.55);
   scene.add(ambient);
 
-  const key = new THREE.DirectionalLight(0xffffff, 3.0);
-  key.position.set(4, 5, 8);
+  const key = new THREE.DirectionalLight(0xffffff, 2.8);
+  key.position.set(5, 6, 8);
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xcfd6ff, 1.1);
-  fill.position.set(-6, 1, 6);
+  const fill = new THREE.DirectionalLight(0xffffff, 1.1);
+  fill.position.set(-6, 2, 5);
   scene.add(fill);
 
-  const rim = new THREE.DirectionalLight(0xffffff, 1.9);
+  const rim = new THREE.DirectionalLight(0xffffff, 1.5);
   rim.position.set(-5, 3, -5);
   scene.add(rim);
 
@@ -56,30 +56,24 @@ export async function createHeroScene({ canvas, modelUrl }) {
     modelRig,
     model,
     scrollProgress: 0,
-    baseRotationX: 0.06,
-    baseRotationY: -0.22,
+    baseRotationX: 0.04,
     baseScale: 1,
     targetMouseX: 0,
     targetMouseY: 0,
     smoothMouseX: 0,
-    smoothMouseY: 0,
-    minYaw: -0.34,
-    maxYaw: 0.12
+    smoothMouseY: 0
   };
 
   fitModelToView(state);
   updateCamera(state);
-
-  model.rotation.set(state.baseRotationX, state.baseRotationY, 0.015);
 
   const clock = new THREE.Clock();
 
   window.addEventListener("mousemove", (event) => {
     const x = event.clientX / window.innerWidth;
     const y = event.clientY / window.innerHeight;
-
-    state.targetMouseX = (x - 0.5) * 0.08;
-    state.targetMouseY = (y - 0.5) * 0.045;
+state.targetMouseX = (x - 0.5) * 0.04;
+state.targetMouseY = (y - 0.5) * 0.02;
   });
 
   window.addEventListener("resize", () => {
@@ -92,30 +86,20 @@ export async function createHeroScene({ canvas, modelUrl }) {
     state.smoothMouseX += (state.targetMouseX - state.smoothMouseX) * 0.05;
     state.smoothMouseY += (state.targetMouseY - state.smoothMouseY) * 0.05;
 
-    state.modelRig.position.y = Math.sin(elapsed * 0.42) * 0.02;
+    modelRig.position.y = Math.sin(elapsed * 0.45) * 0.02;
 
-    const idleY = Math.sin(elapsed * 0.28) * 0.015;
-    const idleX = Math.cos(elapsed * 0.22) * 0.006;
+// STRONGER, CLEAR 360 ROTATION
+const autoYaw = elapsed * 0.6; // was 0.22 → now MUCH more visible
+const scrollYaw = state.scrollProgress * 0.15;
+const mouseYaw = state.smoothMouseX * 0.6;
 
-    let targetRotY =
-      state.baseRotationY +
-      state.scrollProgress * 0.18 +
-      idleY +
-      state.smoothMouseX;
+// blend instead of override
+const targetYaw = autoYaw + scrollYaw + mouseYaw;
 
-    targetRotY = THREE.MathUtils.clamp(targetRotY, state.minYaw, state.maxYaw);
-
-    const targetRotX =
-      state.baseRotationX +
-      state.scrollProgress * 0.02 +
-      idleX -
-      state.smoothMouseY;
-
-    const targetRotZ = state.smoothMouseX * 0.03;
-
-    state.model.rotation.y += (targetRotY - state.model.rotation.y) * 0.05;
-    state.model.rotation.x += (targetRotX - state.model.rotation.x) * 0.05;
-    state.model.rotation.z += (targetRotZ - state.model.rotation.z) * 0.04;
+// smooth rotation (important for premium feel)
+model.rotation.y += (targetYaw - model.rotation.y) * 0.08;
+    model.rotation.x += ((state.baseRotationX + idleX - state.smoothMouseY) - model.rotation.x) * 0.05;
+    model.rotation.z += ((state.smoothMouseX * 0.03) - model.rotation.z) * 0.04;
 
     renderer.render(scene, camera);
     requestAnimationFrame(tick);
@@ -133,14 +117,14 @@ function refineMaterials(root) {
       child.receiveShadow = false;
 
       if ("roughness" in child.material && child.material.roughness !== undefined) {
-        child.material.roughness = Math.min(child.material.roughness + 0.05, 1);
+        child.material.roughness = Math.min(child.material.roughness + 0.06, 1);
       }
 
       if ("metalness" in child.material && child.material.metalness !== undefined) {
         child.material.metalness = Math.max(child.material.metalness, 0.12);
       }
 
-      child.material.envMapIntensity = 1.2;
+      child.material.envMapIntensity = 1.18;
     }
   });
 }
@@ -156,25 +140,25 @@ function fitModelToView(state) {
   state.model.position.sub(center);
 
   const maxDim = Math.max(size.x, size.y, size.z) || 1;
-  const desired = window.innerWidth < 768 ? 4.9 : 6.2;
+  const desired = window.innerWidth < 768 ? 6.5 : 8.5;
 
   state.baseScale = desired / maxDim;
   state.model.scale.setScalar(state.baseScale);
-  state.model.position.y -= size.y * state.baseScale * 0.045;
+  state.model.position.y -= size.y * state.baseScale * 0.04;
 }
 
 function updateCamera(state) {
   state.camera.aspect = window.innerWidth / window.innerHeight;
 
   if (window.innerWidth < 560) {
-    state.camera.fov = 34;
-    state.camera.position.set(0, 0.06, 9.4);
-  } else if (window.innerWidth < 900) {
     state.camera.fov = 32;
-    state.camera.position.set(0, 0.1, 8.9);
-  } else {
+    state.camera.position.set(0, 0.06, 9.2);
+  } else if (window.innerWidth < 900) {
     state.camera.fov = 30;
-    state.camera.position.set(0, 0.12, 8.1);
+    state.camera.position.set(0, 0.08, 8.6);
+  } else {
+    state.camera.fov = 28;
+    state.camera.position.set(0, 0.1, 6.6);
   }
 
   state.camera.updateProjectionMatrix();
