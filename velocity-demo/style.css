@@ -306,4 +306,13 @@ body {
     left: 8%;
     top: 20%;
   }
+
+  /* GHOST TRAIL */
+.ghost-layer {
+  position: absolute;
+  inset: 6%;
+  z-index: 1;
+  pointer-events: none;
+}
+
 }
