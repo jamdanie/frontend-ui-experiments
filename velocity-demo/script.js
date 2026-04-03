@@ -47,7 +47,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 // MUCH farther back
-camera.position.set(0, 0.15, 11.5);
+camera.position.set(0, 0, 12.5);
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -106,10 +106,10 @@ loader.load(
 
     heroGroup.add(model);
 
-    // group placement: lower and more central
-    heroGroup.position.set(0.95, -1.45, 0);
-    heroGroup.rotation.set(0.03, -0.12, 0);
-    heroGroup.scale.setScalar(1);
+   // PERFECT CENTER BASE POSITION
+heroGroup.position.set(0, -0.4, 0);   // <-- centered + slightly lowered
+heroGroup.rotation.set(0.02, -0.05, 0);
+heroGroup.scale.setScalar(0.9);
   },
   undefined,
   (error) => {
@@ -177,9 +177,10 @@ ScrollTrigger.create({
     state.progress = self.progress;
 
     // very restrained movement
-    state.targetX = 0.95 - self.progress * 0.35;
-    state.targetY = -1.45 + self.progress * 0.18;
-    state.targetScale = 1 + self.progress * 0.08;
+    // KEEP MODEL CENTERED LIKE BUTTERMAX
+state.targetX = 0;
+state.targetY = -0.4 + self.progress * 0.1;
+state.targetScale = 0.9 + self.progress * 0.05;
     state.targetRotZ = Math.sin(self.progress * Math.PI * 4) * 0.02;
 
     gsap.to(heroTitle, {
