@@ -72,8 +72,9 @@ export async function createHeroScene({ canvas, modelUrl }) {
   window.addEventListener("mousemove", (event) => {
     const x = event.clientX / window.innerWidth;
     const y = event.clientY / window.innerHeight;
-state.targetMouseX = (x - 0.5) * 0.04;
-state.targetMouseY = (y - 0.5) * 0.02;
+
+    state.targetMouseX = (x - 0.5) * 0.04;
+    state.targetMouseY = (y - 0.5) * 0.02;
   });
 
   window.addEventListener("resize", () => {
@@ -88,16 +89,14 @@ state.targetMouseY = (y - 0.5) * 0.02;
 
     modelRig.position.y = Math.sin(elapsed * 0.45) * 0.02;
 
-// STRONGER, CLEAR 360 ROTATION
-const autoYaw = elapsed * 0.6; // was 0.22 → now MUCH more visible
-const scrollYaw = state.scrollProgress * 0.15;
-const mouseYaw = state.smoothMouseX * 0.6;
+    const autoYaw = elapsed * 0.6;
+    const scrollYaw = state.scrollProgress * 0.15;
+    const mouseYaw = state.smoothMouseX * 0.6;
+    const targetYaw = autoYaw + scrollYaw + mouseYaw;
 
-// blend instead of override
-const targetYaw = autoYaw + scrollYaw + mouseYaw;
+    const idleX = Math.cos(elapsed * 0.25) * 0.004;
 
-// smooth rotation (important for premium feel)
-model.rotation.y += (targetYaw - model.rotation.y) * 0.08;
+    model.rotation.y += (targetYaw - model.rotation.y) * 0.08;
     model.rotation.x += ((state.baseRotationX + idleX - state.smoothMouseY) - model.rotation.x) * 0.05;
     model.rotation.z += ((state.smoothMouseX * 0.03) - model.rotation.z) * 0.04;
 
