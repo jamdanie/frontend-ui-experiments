@@ -2,13 +2,14 @@ window.addEventListener("DOMContentLoaded", () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const slides = [
-  { src: "assets/p1.jpg", label: "ARC-01", bg: "#ffffff", rotate: -3 },
-  { src: "assets/p2.jpg", label: "NEON-02", bg: "#ffffff", rotate: 3 },
-  { src: "assets/p3.jpg", label: "FROST-03", bg: "#ffffff", rotate: -2 },
-  { src: "assets/p4.jpg", label: "GHOST-04", bg: "#ffffff", rotate: 2 },
-  { src: "assets/p5.jpg", label: "VIOLET-05", bg: "#ffffff", rotate: -4 },
-  { src: "assets/p6.jpg", label: "VOID-06", bg: "#ffffff", rotate: 3 }
-];
+    { src: "assets/p1.jpg", label: "ARC-01", bg: "#ffffff", rotate: -6, x: -30, y: -10 },
+    { src: "assets/p2.jpg", label: "NEON-02", bg: "#ffffff", rotate: 6, x: 20, y: -8 },
+    { src: "assets/p3.jpg", label: "FROST-03", bg: "#ffffff", rotate: -4, x: -16, y: 8 },
+    { src: "assets/p4.jpg", label: "GHOST-04", bg: "#ffffff", rotate: 5, x: 18, y: 4 },
+    { src: "assets/p5.jpg", label: "VIOLET-05", bg: "#ffffff", rotate: -7, x: -20, y: -4 },
+    { src: "assets/p6.jpg", label: "VOID-06", bg: "#ffffff", rotate: 7, x: 15, y: 6 }
+  ];
+
   const panels = document.querySelectorAll(".panel");
   const hero = document.getElementById("hero");
   const heroTitle = document.getElementById("hero-title");
@@ -23,6 +24,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const blobA = document.querySelector(".blob-a");
   const blobB = document.querySelector(".blob-b");
   const blobC = document.querySelector(".blob-c");
+  const blobD = document.querySelector(".blob-d");
 
   let currentIndex = 0;
   let transitionLock = false;
@@ -39,22 +41,22 @@ window.addEventListener("DOMContentLoaded", () => {
   gsap.from(".eyebrow", {
     y: 18,
     opacity: 0,
-    duration: 0.6,
+    duration: 0.55,
     ease: "power3.out"
   });
 
   gsap.from(heroTitle, {
-    y: 70,
+    y: 90,
     opacity: 0,
-    duration: 0.9,
-    ease: "power3.out",
-    delay: 0.08
+    duration: 0.95,
+    ease: "power4.out",
+    delay: 0.06
   });
 
   gsap.from(".subcopy", {
-    y: 18,
+    y: 16,
     opacity: 0,
-    duration: 0.65,
+    duration: 0.55,
     ease: "power3.out",
     delay: 0.18
   });
@@ -62,53 +64,64 @@ window.addEventListener("DOMContentLoaded", () => {
   gsap.from(".meta-row", {
     y: 14,
     opacity: 0,
-    duration: 0.6,
+    duration: 0.55,
     ease: "power3.out",
     delay: 0.26
   });
 
   gsap.from(cardStage, {
-    scale: 0.86,
+    scale: 0.8,
     opacity: 0,
-    rotation: -8,
-    duration: 1,
-    ease: "power3.out",
+    rotation: -14,
+    x: 90,
+    duration: 1.05,
+    ease: "power4.out",
     delay: 0.08
   });
 
   gsap.to(cardStage, {
-    y: -12,
-    duration: 2.5,
+    y: -16,
+    duration: 2.2,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
   });
 
   gsap.to(blobA, {
-    x: 18,
-    y: -10,
-    rotation: -8,
-    duration: 4,
+    x: 26,
+    y: -12,
+    rotation: -20,
+    duration: 3.8,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
   });
 
   gsap.to(blobB, {
-    x: -16,
-    y: 10,
-    rotation: 20,
-    duration: 3.3,
+    x: -18,
+    y: 14,
+    rotation: 26,
+    duration: 3.2,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
   });
 
   gsap.to(blobC, {
-    x: 8,
-    y: -10,
-    scale: 1.08,
-    duration: 3.5,
+    x: 10,
+    y: -14,
+    scale: 1.16,
+    duration: 3.4,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+
+  gsap.to(blobD, {
+    x: 12,
+    y: 6,
+    rotation: 11,
+    duration: 2.8,
     ease: "sine.inOut",
     repeat: -1,
     yoyo: true
@@ -119,15 +132,31 @@ window.addEventListener("DOMContentLoaded", () => {
     currentY += (mouseY - currentY) * 0.08;
 
     gsap.set(cardStage, {
-      rotationY: currentX * 10,
-      rotationX: currentY * -10,
-      x: currentX * 18,
-      y: currentY * 12
+      rotationY: currentX * 12,
+      rotationX: currentY * -11,
+      x: currentX * 26,
+      y: currentY * 18
     });
 
     gsap.set(cardBack, {
-      x: 18 + currentX * 10,
-      y: 18 + currentY * 8
+      x: 26 + currentX * 12,
+      y: 24 + currentY * 10
+    });
+
+    gsap.set(blobA, {
+      xPercent: currentX * 7
+    });
+
+    gsap.set(blobB, {
+      xPercent: currentX * -6
+    });
+
+    gsap.set(blobC, {
+      yPercent: currentY * 7
+    });
+
+    gsap.set(blobD, {
+      xPercent: currentX * 5
     });
 
     requestAnimationFrame(animateMouse);
@@ -143,8 +172,8 @@ window.addEventListener("DOMContentLoaded", () => {
   hero.addEventListener("mouseenter", () => {
     hovering = true;
     gsap.to(cardStage, {
-      scale: 1.03,
-      duration: 0.3,
+      scale: 1.04,
+      duration: 0.28,
       ease: "power2.out"
     });
   });
@@ -153,7 +182,7 @@ window.addEventListener("DOMContentLoaded", () => {
     hovering = false;
     gsap.to(cardStage, {
       scale: 1,
-      duration: 0.3,
+      duration: 0.28,
       ease: "power2.out"
     });
   });
@@ -163,30 +192,48 @@ window.addEventListener("DOMContentLoaded", () => {
 
     gsap.to("body", {
       backgroundColor: slide.bg,
-      duration: 0.45,
+      duration: 0.35,
       ease: "power2.out"
     });
 
     gsap.to(heroTitle, {
-      x: index % 2 === 0 ? 0 : 12,
-      y: index % 2 === 0 ? 0 : -4,
-      duration: 0.4,
+      x: slide.x,
+      y: slide.y,
+      duration: 0.38,
       ease: "power2.out"
     });
 
     gsap.to(activeLabel, {
       opacity: 0,
       y: 10,
-      duration: 0.16,
+      duration: 0.14,
       onComplete: () => {
         activeLabel.textContent = slide.label;
         gsap.to(activeLabel, {
           opacity: 1,
           y: 0,
-          duration: 0.22,
+          duration: 0.2,
           ease: "power2.out"
         });
       }
+    });
+
+    gsap.to(blobA, {
+      width: index % 2 === 0 ? 340 : 280,
+      duration: 0.35,
+      ease: "power2.out"
+    });
+
+    gsap.to(blobB, {
+      width: index % 2 === 0 ? 220 : 170,
+      duration: 0.35,
+      ease: "power2.out"
+    });
+
+    gsap.to(blobC, {
+      scale: index % 2 === 0 ? 1 : 1.22,
+      duration: 0.35,
+      ease: "power2.out"
     });
   }
 
@@ -198,10 +245,10 @@ window.addEventListener("DOMContentLoaded", () => {
     imageBack.src = imageFront.src;
 
     gsap.to(cardBack, {
-      opacity: 0.12,
-      scale: 0.94,
-      rotation: nextIndex % 2 === 0 ? -8 : 8,
-      duration: 0.45,
+      opacity: 0.1,
+      scale: 0.92,
+      rotation: nextIndex % 2 === 0 ? -12 : 12,
+      duration: 0.42,
       ease: "power2.out"
     });
 
@@ -209,8 +256,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
     gsap.to(cardFront, {
       rotation: nextSlide.rotate,
-      scale: 1.03,
-      duration: 0.18,
+      scale: 1.05,
+      x: nextSlide.x * 0.3,
+      y: nextSlide.y * 0.3,
+      duration: 0.16,
       ease: "power2.out",
       onComplete: () => {
         imageFront.src = nextSlide.src;
@@ -218,18 +267,20 @@ window.addEventListener("DOMContentLoaded", () => {
         gsap.fromTo(
           cardFront,
           {
-            opacity: 0.5,
-            scale: 1.10,
+            opacity: 0.45,
+            scale: 1.14,
             rotation: nextSlide.rotate * 2,
-            filter: "blur(10px)"
+            filter: "blur(12px)"
           },
           {
             opacity: 1,
-            scale: hovering ? 1.03 : 1,
+            scale: hovering ? 1.04 : 1,
             rotation: nextSlide.rotate,
             filter: "blur(0px)",
-            duration: 0.62,
-            ease: "power3.out",
+            x: 0,
+            y: 0,
+            duration: 0.58,
+            ease: "power4.out",
             onComplete: () => {
               cardFront.classList.remove("flash");
               currentIndex = nextIndex;
@@ -262,7 +313,18 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   gsap.to(".hero-copy", {
-    y: -28,
+    y: -34,
+    ease: "none",
+    scrollTrigger: {
+      trigger: ".site-shell",
+      start: "top top",
+      end: "+=500%",
+      scrub: true
+    }
+  });
+
+  gsap.to(cardStage, {
+    y: -18,
     ease: "none",
     scrollTrigger: {
       trigger: ".site-shell",
