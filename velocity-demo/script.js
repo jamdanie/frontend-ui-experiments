@@ -2,14 +2,13 @@ window.addEventListener("DOMContentLoaded", () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const slides = [
-    { src: "assets/p1.jpg", label: "ARC-01", bg: "#f0c400", rotate: -3 },
-    { src: "assets/p2.jpg", label: "NEON-02", bg: "#efc71c", rotate: 3 },
-    { src: "assets/p3.jpg", label: "FROST-03", bg: "#f2cb32", rotate: -2 },
-    { src: "assets/p4.jpg", label: "GHOST-04", bg: "#f0c400", rotate: 2 },
-    { src: "assets/p5.jpg", label: "VIOLET-05", bg: "#e6ba00", rotate: -4 },
-    { src: "assets/p6.jpg", label: "VOID-06", bg: "#d8ad00", rotate: 3 }
-  ];
-
+  { src: "assets/p1.jpg", label: "ARC-01", bg: "#ffffff", rotate: -3 },
+  { src: "assets/p2.jpg", label: "NEON-02", bg: "#ffffff", rotate: 3 },
+  { src: "assets/p3.jpg", label: "FROST-03", bg: "#ffffff", rotate: -2 },
+  { src: "assets/p4.jpg", label: "GHOST-04", bg: "#ffffff", rotate: 2 },
+  { src: "assets/p5.jpg", label: "VIOLET-05", bg: "#ffffff", rotate: -4 },
+  { src: "assets/p6.jpg", label: "VOID-06", bg: "#ffffff", rotate: 3 }
+];
   const panels = document.querySelectorAll(".panel");
   const hero = document.getElementById("hero");
   const heroTitle = document.getElementById("hero-title");
