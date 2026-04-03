@@ -31,7 +31,7 @@ initCursor();
 async function initApp() {
   const heroScene = await createHeroScene({
     canvas: document.getElementById("webgl"),
-    modelUrl: "/model/console.glb"
+    modelUrl: `${import.meta.env.BASE_URL}model/console.glb`
   });
 
   createHeroScroll(heroScene);
