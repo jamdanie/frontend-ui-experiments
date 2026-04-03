@@ -76,10 +76,10 @@ body {
 }
 
 #heroTitle {
-  font-size: clamp(96px, 16vw, 250px);
-  line-height: 0.82;
+  font-size: clamp(88px, 14vw, 220px);
+  line-height: 0.84;
   font-weight: 900;
-  letter-spacing: -0.09em;
+  letter-spacing: -0.08em;
   position: relative;
   z-index: 70;
 }

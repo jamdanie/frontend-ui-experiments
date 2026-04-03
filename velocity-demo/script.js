@@ -40,17 +40,14 @@ animateCursor();
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
-  32,
+  30,
   window.innerWidth / window.innerHeight,
   0.1,
   100
 );
 
-/*
-  CLOSER camera, but not too close.
-  Smaller z = model appears bigger.
-*/
-camera.position.set(0, 0.22, 6.9);
+// MUCH farther back
+camera.position.set(0, 0.15, 11.5);
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -60,41 +57,59 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 sceneWrap.appendChild(renderer.domElement);
 
-const ambient = new THREE.AmbientLight(0xffffff, 1.9);
+const ambient = new THREE.AmbientLight(0xffffff, 1.8);
 scene.add(ambient);
 
-const keyLight = new THREE.DirectionalLight(0xffffff, 3.0);
-keyLight.position.set(4.2, 4.2, 6);
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+keyLight.position.set(4, 5, 6);
 scene.add(keyLight);
 
-const rimLight = new THREE.DirectionalLight(0xffffff, 1.6);
-rimLight.position.set(-4.5, -1.4, 3.4);
+const rimLight = new THREE.DirectionalLight(0xffffff, 1.4);
+rimLight.position.set(-4, -1, 3);
 scene.add(rimLight);
 
-const fillLight = new THREE.PointLight(0xffffff, 1.2, 30);
+const fillLight = new THREE.PointLight(0xffffff, 1.0, 30);
 fillLight.position.set(0, 1.2, 4.5);
 scene.add(fillLight);
 
 let model = null;
-const modelGroup = new THREE.Group();
-scene.add(modelGroup);
+
+// animate this parent group only
+const heroGroup = new THREE.Group();
+scene.add(heroGroup);
 
 const loader = new GLTFLoader();
 loader.load(
   "./model/console.glb",
   (gltf) => {
     model = gltf.scene;
-    modelGroup.add(model);
 
-    /*
-      START POSITION:
-      - more centered
-      - lower on the page
-      - slightly larger
-    */
-    model.scale.set(1.18, 1.18, 1.18);
-    model.position.set(1.05, -1.05, 0);
-    model.rotation.set(0.16, -0.9, -0.12);
+    // center model by bounding box
+    const box = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+
+    box.getSize(size);
+    box.getCenter(center);
+
+    model.position.x -= center.x;
+    model.position.y -= center.y;
+    model.position.z -= center.z;
+
+    // MUCH SMALLER normalized size
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const normalizedScale = 1.75 / maxDim;
+    model.scale.setScalar(normalizedScale);
+
+    // local model tilt
+    model.rotation.set(0.08, -0.45, -0.05);
+
+    heroGroup.add(model);
+
+    // group placement: lower and more central
+    heroGroup.position.set(0.95, -1.45, 0);
+    heroGroup.rotation.set(0.03, -0.12, 0);
+    heroGroup.scale.setScalar(1);
   },
   undefined,
   (error) => {
@@ -110,25 +125,6 @@ const labels = [
   "ICECREAM-05",
   "ICECREAM-06"
 ];
-
-const state = {
-  progress: 0,
-  targetPosX: 1.05,
-  targetPosY: -1.05,
-  targetScale: 1.18,
-  targetRotX: 0.16,
-  targetRotY: -0.9,
-  targetRotZ: -0.12,
-  activeIndex: 0
-};
-
-document.addEventListener("mousemove", (e) => {
-  const nx = e.clientX / window.innerWidth - 0.5;
-  const ny = e.clientY / window.innerHeight - 0.5;
-
-  state.targetRotY = (-0.9 + state.progress * 0.55) + nx * 0.3;
-  state.targetRotX = (0.16 - state.progress * 0.05) + ny * -0.15;
-});
 
 function setActiveVariant(index) {
   variantItems.forEach((item, i) => {
@@ -151,6 +147,25 @@ function setActiveVariant(index) {
   });
 }
 
+const state = {
+  progress: 0,
+  targetX: 0.95,
+  targetY: -1.45,
+  targetScale: 1,
+  targetRotX: 0.03,
+  targetRotY: -0.12,
+  targetRotZ: 0,
+  activeIndex: 0
+};
+
+document.addEventListener("mousemove", (e) => {
+  const nx = e.clientX / window.innerWidth - 0.5;
+  const ny = e.clientY / window.innerHeight - 0.5;
+
+  state.targetRotY = (-0.12 + state.progress * 0.12) + nx * 0.14;
+  state.targetRotX = (0.03 - state.progress * 0.02) + ny * -0.08;
+});
+
 ScrollTrigger.create({
   trigger: ".site-shell",
   start: "top top",
@@ -161,45 +176,41 @@ ScrollTrigger.create({
   onUpdate: (self) => {
     state.progress = self.progress;
 
-    /*
-      SCROLL CHOREOGRAPHY:
-      starts lower + centered,
-      then drifts slightly left/up as you scroll
-    */
-    state.targetPosX = 1.05 - self.progress * 0.65;
-    state.targetPosY = -1.05 + self.progress * 0.28;
-    state.targetScale = 1.18 + self.progress * 0.28;
-    state.targetRotZ = -0.12 + Math.sin(self.progress * Math.PI * 4) * 0.05;
+    // very restrained movement
+    state.targetX = 0.95 - self.progress * 0.35;
+    state.targetY = -1.45 + self.progress * 0.18;
+    state.targetScale = 1 + self.progress * 0.08;
+    state.targetRotZ = Math.sin(self.progress * Math.PI * 4) * 0.02;
 
     gsap.to(heroTitle, {
-      x: self.progress * 115 - 58,
-      y: self.progress * -30,
+      x: self.progress * 85 - 42,
+      y: self.progress * -20,
       duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-a", {
-      x: self.progress * 120,
-      rotation: -16 + self.progress * 13,
+      x: self.progress * 90,
+      rotation: -16 + self.progress * 10,
       duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-b", {
-      x: self.progress * -105,
-      y: self.progress * 48,
+      x: self.progress * -75,
+      y: self.progress * 32,
       duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-c", {
-      scale: 1 + self.progress * 0.55,
+      scale: 1 + self.progress * 0.32,
       duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-d", {
-      x: self.progress * 78,
+      x: self.progress * 55,
       duration: 0.18,
       overwrite: true
     });
@@ -247,16 +258,16 @@ function animate() {
   requestAnimationFrame(animate);
 
   if (model) {
-    model.position.x += (state.targetPosX - model.position.x) * 0.08;
-    model.position.y += (state.targetPosY - model.position.y) * 0.08;
+    heroGroup.position.x += (state.targetX - heroGroup.position.x) * 0.08;
+    heroGroup.position.y += (state.targetY - heroGroup.position.y) * 0.08;
 
-    model.rotation.x += (state.targetRotX - model.rotation.x) * 0.08;
-    model.rotation.y += (state.targetRotY - model.rotation.y) * 0.08;
-    model.rotation.z += (state.targetRotZ - model.rotation.z) * 0.08;
+    heroGroup.rotation.x += (state.targetRotX - heroGroup.rotation.x) * 0.08;
+    heroGroup.rotation.y += (state.targetRotY - heroGroup.rotation.y) * 0.08;
+    heroGroup.rotation.z += (state.targetRotZ - heroGroup.rotation.z) * 0.08;
 
-    model.scale.x += (state.targetScale - model.scale.x) * 0.08;
-    model.scale.y += (state.targetScale - model.scale.y) * 0.08;
-    model.scale.z += (state.targetScale - model.scale.z) * 0.08;
+    heroGroup.scale.x += (state.targetScale - heroGroup.scale.x) * 0.08;
+    heroGroup.scale.y += (state.targetScale - heroGroup.scale.y) * 0.08;
+    heroGroup.scale.z += (state.targetScale - heroGroup.scale.z) * 0.08;
   }
 
   renderer.render(scene, camera);
