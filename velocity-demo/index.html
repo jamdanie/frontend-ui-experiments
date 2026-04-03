@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Velocity Demo</title>
+  <title>Velocity</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="cursor-dot"></div>
   <div class="cursor-ring"></div>
 
-  <main class="scene-shell">
+  <main class="site-shell">
     <div class="grain"></div>
-    <div class="corner-mark">✕</div>
+    <div class="corner-x">✕</div>
 
-    <section class="hero">
-      <div class="hero-copy">
+    <section class="hero" id="hero">
+      <div class="copy">
         <p class="eyebrow">INTERACTIVE DEMO // HANDHELD SERIES</p>
-        <h1 id="hero-title">Velocity</h1>
+        <h1 id="heroTitle">Velocity</h1>
         <p class="subcopy">Portable gaming, reimagined.</p>
-        <div class="meta-row">
+
+        <div class="meta">
           <span class="instruction">MOVE // HOVER // SCROLL</span>
-          <span class="active-pill">ICECREAM-01</span>
+          <span class="pill" id="activePill">ICECREAM-01</span>
         </div>
       </div>
 
@@ -30,9 +31,19 @@
       <div class="ink ink-c"></div>
       <div class="ink ink-d"></div>
 
-      <div id="canvas-wrap"></div>
+      <div id="sceneWrap"></div>
+
+      <ul class="variant-list" id="variantList">
+        <li class="variant is-active">ICECREAM-01</li>
+        <li class="variant">ICECREAM-02</li>
+        <li class="variant">ICECREAM-03</li>
+        <li class="variant">ICECREAM-04</li>
+        <li class="variant">ICECREAM-05</li>
+        <li class="variant">ICECREAM-06</li>
+      </ul>
     </section>
 
+    <section class="driver"></section>
     <section class="driver"></section>
     <section class="driver"></section>
     <section class="driver"></section>

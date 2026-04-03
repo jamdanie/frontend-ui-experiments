@@ -5,9 +5,9 @@
 }
 
 :root {
-  --bg: #ffffff;
+  --bg: #f3f3f1;
   --text: #050505;
-  --muted: rgba(0, 0, 0, 0.62);
+  --muted: rgba(0, 0, 0, 0.6);
 }
 
 html,
@@ -24,7 +24,7 @@ body {
   min-height: 100vh;
 }
 
-.scene-shell {
+.site-shell {
   position: relative;
   background: var(--bg);
 }
@@ -34,69 +34,71 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.04;
+  opacity: 0.03;
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(0,0,0,0.16) 0 1px, transparent 1px),
-    radial-gradient(circle at 78% 28%, rgba(0,0,0,0.12) 0 1px, transparent 1px),
-    radial-gradient(circle at 52% 76%, rgba(0,0,0,0.10) 0 1px, transparent 1px);
+    radial-gradient(circle at 18% 22%, rgba(0,0,0,0.16) 0 1px, transparent 1px),
+    radial-gradient(circle at 78% 30%, rgba(0,0,0,0.12) 0 1px, transparent 1px),
+    radial-gradient(circle at 55% 78%, rgba(0,0,0,0.10) 0 1px, transparent 1px);
   background-size: 18px 18px, 24px 24px, 20px 20px;
 }
 
-.corner-mark {
+.corner-x {
   position: fixed;
-  top: 16px;
+  top: 18px;
   left: 14px;
   z-index: 100;
-  font-size: 32px;
+  font-size: 34px;
   line-height: 1;
   user-select: none;
 }
 
 .hero {
   position: relative;
-  height: 100vh;
   width: 100%;
+  height: 100vh;
   overflow: hidden;
 }
 
-.hero-copy {
+.copy {
   position: absolute;
-  top: 9vh;
-  left: 3.5vw;
-  z-index: 50;
-  max-width: 56vw;
+  top: 10vh;
+  left: 2.8vw;
+  z-index: 60;
+  max-width: 54vw;
   pointer-events: none;
 }
 
 .eyebrow {
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.18em;
-  margin-bottom: 20px;
-  opacity: 0.85;
+  margin-bottom: 18px;
+  opacity: 0.84;
 }
 
-#hero-title {
-  font-size: clamp(130px, 22vw, 360px);
+#heroTitle {
+  font-size: clamp(120px, 19vw, 330px);
   line-height: 0.78;
   font-weight: 900;
-  letter-spacing: -0.095em;
+  letter-spacing: -0.1em;
   position: relative;
-  z-index: 55;
+  z-index: 70;
 }
 
 .subcopy {
-  margin-top: 24px;
-  font-size: 19px;
+  margin-top: 22px;
+  font-size: 18px;
   color: var(--muted);
   max-width: 420px;
+  pointer-events: auto;
 }
 
-.meta-row {
-  margin-top: 30px;
+.meta {
+  margin-top: 28px;
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
   align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  pointer-events: auto;
 }
 
 .instruction {
@@ -106,69 +108,98 @@ body {
   color: rgba(0, 0, 0, 0.72);
 }
 
-.active-pill {
+.pill {
   font-size: 13px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 10px 16px;
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(6px);
 }
 
-#canvas-wrap {
+#sceneWrap {
   position: absolute;
   inset: 0;
   z-index: 20;
 }
 
-#canvas-wrap canvas {
+#sceneWrap canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
 
+.variant-list {
+  position: absolute;
+  right: 3.2vw;
+  bottom: 9vh;
+  z-index: 65;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.variant {
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.4);
+  transition: 0.2s ease;
+}
+
+.variant.is-active {
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
 .ink {
   position: absolute;
   background: #000;
-  z-index: 10;
+  z-index: 12;
   pointer-events: none;
   opacity: 0.98;
 }
 
 .ink-a {
-  width: 540px;
-  height: 110px;
+  width: 520px;
+  height: 108px;
   left: -7%;
   bottom: 10%;
   border-radius: 999px;
-  transform: rotate(-17deg);
+  transform: rotate(-16deg);
 }
 
 .ink-b {
-  width: 460px;
-  height: 88px;
-  right: -6%;
-  top: 8%;
+  width: 480px;
+  height: 92px;
+  right: -7%;
+  top: 7%;
   border-radius: 999px;
-  transform: rotate(18deg);
+  transform: rotate(17deg);
 }
 
 .ink-c {
   width: 150px;
   height: 150px;
-  right: 14%;
-  bottom: 9%;
+  right: 12%;
+  bottom: 10%;
   border-radius: 50%;
 }
 
 .ink-d {
-  width: 180px;
+  width: 170px;
   height: 34px;
   left: 14%;
-  top: 17%;
+  top: 16%;
   border-radius: 999px;
-  transform: rotate(10deg);
+  transform: rotate(9deg);
 }
 
 .driver {
@@ -193,33 +224,49 @@ body {
 }
 
 .cursor-ring {
-  width: 34px;
-  height: 34px;
-  border: 1.5px solid rgba(0, 0, 0, 0.85);
-  transition: width 0.18s ease, height 0.18s ease, border-color 0.18s ease;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(0, 0, 0, 0.88);
+  transition: width 0.18s ease, height 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
 body.is-hovering .cursor-ring {
   width: 64px;
   height: 64px;
   border-color: rgba(0, 0, 0, 1);
+  background: rgba(0, 0, 0, 0.03);
 }
 
-@media (max-width: 900px) {
-  .hero-copy {
-    max-width: 90vw;
-    top: 8vh;
+@media (max-width: 980px) {
+  .copy {
+    max-width: 88vw;
+    top: 9vh;
     left: 5vw;
   }
 
-  #hero-title {
-    font-size: clamp(76px, 20vw, 150px);
+  #heroTitle {
+    font-size: clamp(78px, 21vw, 160px);
     line-height: 0.82;
   }
 
   .subcopy {
     font-size: 15px;
     max-width: 300px;
+  }
+
+  .variant-list {
+    right: auto;
+    left: 5vw;
+    bottom: 5vh;
+    gap: 10px;
+  }
+
+  .variant {
+    font-size: 13px;
+  }
+
+  .variant.is-active {
+    padding: 7px 12px;
   }
 
   .ink-a {
@@ -233,8 +280,8 @@ body.is-hovering .cursor-ring {
   }
 
   .ink-c {
-    width: 72px;
-    height: 72px;
+    width: 74px;
+    height: 74px;
   }
 
   .ink-d {

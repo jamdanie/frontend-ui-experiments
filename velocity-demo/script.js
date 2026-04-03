@@ -3,10 +3,10 @@ import { GLTFLoader } from "https://esm.sh/three@0.160.0/examples/jsm/loaders/GL
 
 gsap.registerPlugin(ScrollTrigger);
 
-console.log("script.js module loaded");
-
-const canvasWrap = document.getElementById("canvas-wrap");
-const heroTitle = document.getElementById("hero-title");
+const sceneWrap = document.getElementById("sceneWrap");
+const heroTitle = document.getElementById("heroTitle");
+const activePill = document.getElementById("activePill");
+const variantItems = Array.from(document.querySelectorAll(".variant"));
 
 const cursorDot = document.querySelector(".cursor-dot");
 const cursorRing = document.querySelector(".cursor-ring");
@@ -19,13 +19,12 @@ let ringY = mouseY;
 document.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-
   cursorDot.style.left = `${mouseX}px`;
   cursorDot.style.top = `${mouseY}px`;
 });
 
 document.addEventListener("mouseover", (e) => {
-  const interactive = e.target.closest("a, button, .hero, .active-pill");
+  const interactive = e.target.closest("a, button, .hero, .pill, .variant");
   document.body.classList.toggle("is-hovering", !!interactive);
 });
 
@@ -41,12 +40,12 @@ animateCursor();
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
-  35,
+  32,
   window.innerWidth / window.innerHeight,
   0.1,
   100
 );
-camera.position.set(0, 0.1, 5.2);
+camera.position.set(0, 0.08, 7.8);
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -54,120 +53,146 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
-canvasWrap.appendChild(renderer.domElement);
+sceneWrap.appendChild(renderer.domElement);
 
-const ambient = new THREE.AmbientLight(0xffffff, 1.5);
+const ambient = new THREE.AmbientLight(0xffffff, 1.9);
 scene.add(ambient);
 
-const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
-keyLight.position.set(2.5, 3.5, 4.5);
+const keyLight = new THREE.DirectionalLight(0xffffff, 3.0);
+keyLight.position.set(4.2, 4.2, 6);
 scene.add(keyLight);
 
 const rimLight = new THREE.DirectionalLight(0xffffff, 1.6);
-rimLight.position.set(-3.5, -1.5, 2.5);
+rimLight.position.set(-4.5, -1.4, 3.4);
 scene.add(rimLight);
 
-const fillLight = new THREE.PointLight(0xffffff, 1.2, 20);
-fillLight.position.set(0, 1, 3);
+const fillLight = new THREE.PointLight(0xffffff, 1.2, 30);
+fillLight.position.set(0, 1.2, 4.5);
 scene.add(fillLight);
 
-// fallback object so something always appears
-const debugGeo = new THREE.TorusKnotGeometry(0.7, 0.22, 180, 24);
-const debugMat = new THREE.MeshNormalMaterial();
-const debugMesh = new THREE.Mesh(debugGeo, debugMat);
-debugMesh.position.set(1.0, -0.1, 0);
-scene.add(debugMesh);
-
 let model = null;
+const modelGroup = new THREE.Group();
+scene.add(modelGroup);
 
 const loader = new GLTFLoader();
 loader.load(
   "./model/console.glb",
   (gltf) => {
-    console.log("GLB loaded successfully");
     model = gltf.scene;
-    scene.add(model);
+    modelGroup.add(model);
 
-    model.scale.set(2.3, 2.3, 2.3);
-    model.position.set(1.15, -0.15, 0);
-    model.rotation.set(0.18, -0.72, -0.16);
-
-    debugMesh.visible = false;
+    model.scale.set(1.05, 1.05, 1.05);
+    model.position.set(1.95, -0.38, 0);
+    model.rotation.set(0.14, -0.88, -0.14);
   },
-  (progress) => {
-    if (progress.total) {
-      console.log(`GLB loading: ${Math.round((progress.loaded / progress.total) * 100)}%`);
-    }
-  },
+  undefined,
   (error) => {
     console.error("Failed to load model:", error);
-    debugMesh.visible = true;
   }
 );
 
+const labels = [
+  "ICECREAM-01",
+  "ICECREAM-02",
+  "ICECREAM-03",
+  "ICECREAM-04",
+  "ICECREAM-05",
+  "ICECREAM-06"
+];
+
 const state = {
-  scrollProgress: 0,
-  targetRotX: 0,
-  targetRotY: 0,
-  targetPosX: 1.15,
-  targetPosY: -0.15,
-  targetScale: 2.3
+  progress: 0,
+  targetPosX: 1.95,
+  targetPosY: -0.38,
+  targetScale: 1.05,
+  targetRotX: 0.14,
+  targetRotY: -0.88,
+  targetRotZ: -0.14,
+  activeIndex: 0
 };
 
 document.addEventListener("mousemove", (e) => {
   const nx = e.clientX / window.innerWidth - 0.5;
   const ny = e.clientY / window.innerHeight - 0.5;
 
-  state.targetRotY = -0.72 + nx * 0.55;
-  state.targetRotX = 0.18 + ny * -0.28;
+  state.targetRotY = (-0.88 + state.progress * 0.65) + nx * 0.35;
+  state.targetRotX = (0.14 - state.progress * 0.08) + ny * -0.18;
 });
 
+function setActiveVariant(index) {
+  variantItems.forEach((item, i) => {
+    item.classList.toggle("is-active", i === index);
+  });
+
+  gsap.to(activePill, {
+    opacity: 0,
+    y: 10,
+    duration: 0.12,
+    onComplete: () => {
+      activePill.textContent = labels[index];
+      gsap.to(activePill, {
+        opacity: 1,
+        y: 0,
+        duration: 0.2,
+        ease: "power2.out"
+      });
+    }
+  });
+}
+
 ScrollTrigger.create({
-  trigger: ".scene-shell",
+  trigger: ".site-shell",
   start: "top top",
-  end: "+=500%",
+  end: "+=600%",
   scrub: true,
   pin: ".hero",
   pinSpacing: false,
   onUpdate: (self) => {
-    state.scrollProgress = self.progress;
+    state.progress = self.progress;
 
-    state.targetPosX = 1.15 - self.progress * 0.75;
-    state.targetPosY = -0.15 + self.progress * 0.25;
-    state.targetScale = 2.3 + self.progress * 0.7;
+    state.targetPosX = 1.95 - self.progress * 1.1;
+    state.targetPosY = -0.38 + self.progress * 0.22;
+    state.targetScale = 1.05 + self.progress * 0.42;
+    state.targetRotZ = -0.14 + Math.sin(self.progress * Math.PI * 4) * 0.06;
 
     gsap.to(heroTitle, {
-      x: self.progress * 110 - 55,
-      y: self.progress * -36,
-      duration: 0.2,
+      x: self.progress * 120 - 58,
+      y: self.progress * -34,
+      duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-a", {
       x: self.progress * 120,
-      rotation: -17 + self.progress * 14,
-      duration: 0.2,
+      rotation: -16 + self.progress * 13,
+      duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-b", {
-      x: self.progress * -110,
-      y: self.progress * 50,
-      duration: 0.2,
+      x: self.progress * -105,
+      y: self.progress * 48,
+      duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-c", {
-      scale: 1 + self.progress * 0.6,
-      duration: 0.2,
+      scale: 1 + self.progress * 0.55,
+      duration: 0.18,
       overwrite: true
     });
 
     gsap.to(".ink-d", {
-      x: self.progress * 80,
-      duration: 0.2,
+      x: self.progress * 78,
+      duration: 0.18,
       overwrite: true
     });
+
+    const idx = Math.min(labels.length - 1, Math.floor(self.progress * labels.length));
+    if (idx !== state.activeIndex) {
+      state.activeIndex = idx;
+      setActiveVariant(idx);
+    }
   }
 });
 
@@ -178,7 +203,7 @@ gsap.from(".eyebrow", {
   ease: "power3.out"
 });
 
-gsap.from("#hero-title", {
+gsap.from("#heroTitle", {
   y: 90,
   opacity: 0,
   duration: 0.95,
@@ -194,7 +219,7 @@ gsap.from(".subcopy", {
   delay: 0.16
 });
 
-gsap.from(".meta-row", {
+gsap.from(".meta", {
   y: 14,
   opacity: 0,
   duration: 0.55,
@@ -205,18 +230,13 @@ gsap.from(".meta-row", {
 function animate() {
   requestAnimationFrame(animate);
 
-  if (!model && debugMesh.visible) {
-    debugMesh.rotation.x += 0.01;
-    debugMesh.rotation.y += 0.015;
-  }
-
   if (model) {
     model.position.x += (state.targetPosX - model.position.x) * 0.08;
     model.position.y += (state.targetPosY - model.position.y) * 0.08;
 
-    model.rotation.y += (state.targetRotY - model.rotation.y) * 0.08;
     model.rotation.x += (state.targetRotX - model.rotation.x) * 0.08;
-    model.rotation.z += (-0.16 + Math.sin(state.scrollProgress * Math.PI * 4) * 0.08 - model.rotation.z) * 0.08;
+    model.rotation.y += (state.targetRotY - model.rotation.y) * 0.08;
+    model.rotation.z += (state.targetRotZ - model.rotation.z) * 0.08;
 
     model.scale.x += (state.targetScale - model.scale.x) * 0.08;
     model.scale.y += (state.targetScale - model.scale.y) * 0.08;
