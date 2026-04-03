@@ -1,58 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Velocity</title>
-  <link rel="stylesheet" href="./style.css" />
-</head>
-<body>
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Velocity</title>
+    <meta
+      name="description"
+      content="Premium cinematic interactive product reveal."
+    />
 
-  <main class="site-shell">
-    <div class="grain"></div>
-    <div class="corner-x">✕</div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
 
-    <section class="hero" id="hero">
-      <div class="copy">
-        <p class="eyebrow">INTERACTIVE DEMO // HANDHELD SERIES</p>
-        <h1 id="heroTitle">Velocity</h1>
-        <p class="subcopy">Portable gaming, reimagined.</p>
+    <div id="app">
+      <section class="hero" id="hero">
+        <div class="hero-bg">
+          <div class="hero-gradient hero-gradient-1"></div>
+          <div class="hero-gradient hero-gradient-2"></div>
+          <div class="hero-grid"></div>
 
-        <div class="meta">
-          <span class="instruction">MOVE // HOVER // SCROLL</span>
-          <span class="pill" id="activePill">ICECREAM-01</span>
+          <div class="geo geo-line geo-line-1" data-speed="0.08"></div>
+          <div class="geo geo-line geo-line-2" data-speed="0.12"></div>
+          <div class="geo geo-orb geo-orb-1" data-speed="0.06"></div>
+          <div class="geo geo-orb geo-orb-2" data-speed="0.1"></div>
         </div>
-      </div>
 
-      <div class="ink ink-a"></div>
-      <div class="ink ink-b"></div>
-      <div class="ink ink-c"></div>
-      <div class="ink ink-d"></div>
+        <div class="hero-stage">
+          <div class="hero-copy">
+            <div class="eyebrow hover-target">Portable Console / Premium Motion Study</div>
 
-      <div id="sceneWrap"></div>
+            <h1 class="hero-title">
+              <span class="hero-title-line">Velocity</span>
+            </h1>
 
-      <ul class="variant-list" id="variantList">
-        <li class="variant is-active">ICECREAM-01</li>
-        <li class="variant">ICECREAM-02</li>
-        <li class="variant">ICECREAM-03</li>
-        <li class="variant">ICECREAM-04</li>
-        <li class="variant">ICECREAM-05</li>
-        <li class="variant">ICECREAM-06</li>
-      </ul>
-    </section>
+            <p class="hero-sub">
+              A cinematic handheld presentation shaped by layered typography,
+              disciplined motion, and controlled 3D staging.
+            </p>
 
-    <section class="driver"></section>
-    <section class="driver"></section>
-    <section class="driver"></section>
-    <section class="driver"></section>
-    <section class="driver"></section>
-    <section class="driver"></section>
-  </main>
+            <div class="hero-actions">
+              <a href="#details" class="chip hover-target">Explore</a>
+              <div class="hero-meta">Scroll-driven / GLB / Motion-first</div>
+            </div>
+          </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script type="module" src="./script.js"></script>
-</body>
+          <div class="hero-canvas-shell">
+            <div class="model-backlight"></div>
+            <canvas id="webgl"></canvas>
+            <div class="canvas-fade"></div>
+          </div>
+
+          <div class="hero-side">
+            <div class="side-block">
+              <span class="side-label">Series</span>
+              <span class="side-value">Concept 01</span>
+            </div>
+            <div class="side-block">
+              <span class="side-label">Input</span>
+              <span class="side-value">Scroll / Cursor</span>
+            </div>
+            <div class="side-block side-scroll">
+              <span class="side-label">Scroll</span>
+              <span class="side-line"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel panel-intro">
+        <div class="container">
+          <div class="panel-kicker">Presentation</div>
+          <h2>Built like a premium product reveal.</h2>
+          <p>
+            The goal is a more dominant object composition, smoother scroll
+            motion, better hierarchy, and a hero that feels expensive instead
+            of experimental.
+          </p>
+        </div>
+      </section>
+
+    
+
+      <section class="panel panel-outro">
+        <div class="container">
+          <div class="panel-kicker">Foundation</div>
+          <h2>This is the new base architecture.</h2>
+          <p>
+            Once this is running, the next step is staged camera choreography,
+            bloom, and section-specific product storytelling.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
