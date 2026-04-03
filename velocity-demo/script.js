@@ -3,6 +3,8 @@ import { GLTFLoader } from "https://unpkg.com/three@0.160.0/examples/jsm/loaders
 
 gsap.registerPlugin(ScrollTrigger);
 
+console.log("script.js module loaded");
+
 const canvasWrap = document.getElementById("canvas-wrap");
 const heroTitle = document.getElementById("hero-title");
 
@@ -69,24 +71,38 @@ const fillLight = new THREE.PointLight(0xffffff, 1.2, 20);
 fillLight.position.set(0, 1, 3);
 scene.add(fillLight);
 
+// DEBUG OBJECT: always visible, even if model fails
+const debugGeo = new THREE.TorusKnotGeometry(0.7, 0.22, 180, 24);
+const debugMat = new THREE.MeshNormalMaterial();
+const debugMesh = new THREE.Mesh(debugGeo, debugMat);
+debugMesh.position.set(1.0, -0.1, 0);
+scene.add(debugMesh);
+
 let model = null;
-const modelGroup = new THREE.Group();
-scene.add(modelGroup);
 
 const loader = new GLTFLoader();
 loader.load(
   "./model/console.glb",
   (gltf) => {
+    console.log("GLB loaded successfully");
     model = gltf.scene;
-    modelGroup.add(model);
+    scene.add(model);
 
     model.scale.set(2.3, 2.3, 2.3);
     model.position.set(1.15, -0.15, 0);
     model.rotation.set(0.18, -0.72, -0.16);
+
+    // hide debug object once real model loads
+    debugMesh.visible = false;
   },
-  undefined,
+  (progress) => {
+    if (progress.total) {
+      console.log(`GLB loading: ${Math.round((progress.loaded / progress.total) * 100)}%`);
+    }
+  },
   (error) => {
     console.error("Failed to load model:", error);
+    debugMesh.visible = true;
   }
 );
 
@@ -189,6 +205,12 @@ gsap.from(".meta-row", {
 
 function animate() {
   requestAnimationFrame(animate);
+
+  // keep debug object alive if model isn't loaded
+  if (!model && debugMesh.visible) {
+    debugMesh.rotation.x += 0.01;
+    debugMesh.rotation.y += 0.015;
+  }
 
   if (model) {
     model.position.x += (state.targetPosX - model.position.x) * 0.08;
