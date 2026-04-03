@@ -26,6 +26,21 @@ body {
   overflow-x: hidden;
 }
 
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.55) 0.5px, transparent 0.8px),
+    radial-gradient(circle at 80% 40%, rgba(0, 0, 0, 0.45) 0.5px, transparent 0.8px),
+    radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.35) 0.5px, transparent 0.8px);
+  background-size: 180px 180px, 220px 220px, 260px 260px;
+  mix-blend-mode: multiply;
+}
+
 a,
 button,
 .hover-target {
@@ -57,18 +72,20 @@ canvas {
 }
 
 .cursor-ring {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border: 1px solid rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
   transition:
-    width 0.24s ease,
-    height 0.24s ease,
-    opacity 0.24s ease;
+    width 0.22s ease,
+    height 0.22s ease,
+    opacity 0.22s ease;
 }
 
 .cursor-ring.is-hover {
-  width: 54px;
-  height: 54px;
+  width: 60px;
+  height: 60px;
+  opacity: 0.82;
 }
 
 .hero {
@@ -184,6 +201,16 @@ canvas {
   left: 12%;
 }
 
+.geo-orb {
+  width: 240px;
+  height: 240px;
+  right: 14%;
+  top: 20%;
+  border-radius: 50%;
+  border: 1px solid rgba(13, 13, 15, 0.08);
+  opacity: 0.45;
+}
+
 .hero-stage {
   position: relative;
   z-index: 2;
@@ -207,6 +234,7 @@ canvas {
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
+  transition: transform 0.2s ease;
 }
 
 .hero-title {
@@ -235,6 +263,7 @@ canvas {
   position: absolute;
   inset: 0;
   z-index: 2;
+  filter: contrast(105%) saturate(102%);
 }
 
 .model-backlight {
@@ -245,8 +274,22 @@ canvas {
   height: min(46vw, 700px);
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.18) 26%, rgba(255, 255, 255, 0) 62%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.18) 26%, rgba(255, 255, 255, 0) 62%);
   filter: blur(14px);
+  pointer-events: none;
+}
+
+.model-halo {
+  position: absolute;
+  left: 50%;
+  top: 53%;
+  width: min(56vw, 840px);
+  height: min(56vw, 840px);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.07) 36%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(24px);
+  opacity: 0.62;
   pointer-events: none;
 }
 
@@ -294,6 +337,7 @@ canvas {
   color: rgba(13, 13, 15, 0.68);
   font-size: 0.78rem;
   font-weight: 600;
+  transition: transform 0.2s ease;
 }
 
 .meta-small {
@@ -305,7 +349,7 @@ canvas {
 }
 
 .after-hero {
-  padding: 8rem 0 9rem;
+  padding: 7rem 0 8rem;
   background: var(--bg);
 }
 
@@ -326,8 +370,9 @@ canvas {
 
 .after-hero h2 {
   margin: 0;
-  font-size: clamp(2.4rem, 6vw, 5rem);
-  line-height: 0.95;
+  max-width: 900px;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 0.98;
   letter-spacing: -0.06em;
 }
 
@@ -360,7 +405,7 @@ canvas {
   }
 
   .after-hero {
-    padding: 6.5rem 0 7rem;
+    padding: 6rem 0 6.5rem;
   }
 }
 
