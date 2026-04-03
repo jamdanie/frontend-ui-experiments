@@ -45,7 +45,12 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(0, 0.08, 7.8);
+
+/*
+  CLOSER camera, but not too close.
+  Smaller z = model appears bigger.
+*/
+camera.position.set(0, 0.22, 6.9);
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -81,9 +86,15 @@ loader.load(
     model = gltf.scene;
     modelGroup.add(model);
 
-    model.scale.set(1.05, 1.05, 1.05);
-    model.position.set(1.95, -0.38, 0);
-    model.rotation.set(0.14, -0.88, -0.14);
+    /*
+      START POSITION:
+      - more centered
+      - lower on the page
+      - slightly larger
+    */
+    model.scale.set(1.18, 1.18, 1.18);
+    model.position.set(1.05, -1.05, 0);
+    model.rotation.set(0.16, -0.9, -0.12);
   },
   undefined,
   (error) => {
@@ -102,12 +113,12 @@ const labels = [
 
 const state = {
   progress: 0,
-  targetPosX: 1.95,
-  targetPosY: -0.38,
-  targetScale: 1.05,
-  targetRotX: 0.14,
-  targetRotY: -0.88,
-  targetRotZ: -0.14,
+  targetPosX: 1.05,
+  targetPosY: -1.05,
+  targetScale: 1.18,
+  targetRotX: 0.16,
+  targetRotY: -0.9,
+  targetRotZ: -0.12,
   activeIndex: 0
 };
 
@@ -115,8 +126,8 @@ document.addEventListener("mousemove", (e) => {
   const nx = e.clientX / window.innerWidth - 0.5;
   const ny = e.clientY / window.innerHeight - 0.5;
 
-  state.targetRotY = (-0.88 + state.progress * 0.65) + nx * 0.35;
-  state.targetRotX = (0.14 - state.progress * 0.08) + ny * -0.18;
+  state.targetRotY = (-0.9 + state.progress * 0.55) + nx * 0.3;
+  state.targetRotX = (0.16 - state.progress * 0.05) + ny * -0.15;
 });
 
 function setActiveVariant(index) {
@@ -150,14 +161,19 @@ ScrollTrigger.create({
   onUpdate: (self) => {
     state.progress = self.progress;
 
-    state.targetPosX = 1.95 - self.progress * 1.1;
-    state.targetPosY = -0.38 + self.progress * 0.22;
-    state.targetScale = 1.05 + self.progress * 0.42;
-    state.targetRotZ = -0.14 + Math.sin(self.progress * Math.PI * 4) * 0.06;
+    /*
+      SCROLL CHOREOGRAPHY:
+      starts lower + centered,
+      then drifts slightly left/up as you scroll
+    */
+    state.targetPosX = 1.05 - self.progress * 0.65;
+    state.targetPosY = -1.05 + self.progress * 0.28;
+    state.targetScale = 1.18 + self.progress * 0.28;
+    state.targetRotZ = -0.12 + Math.sin(self.progress * Math.PI * 4) * 0.05;
 
     gsap.to(heroTitle, {
-      x: self.progress * 120 - 58,
-      y: self.progress * -34,
+      x: self.progress * 115 - 58,
+      y: self.progress * -30,
       duration: 0.18,
       overwrite: true
     });
