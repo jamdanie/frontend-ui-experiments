@@ -9,7 +9,7 @@
     <title>Velocity</title>
     <meta
       name="description"
-      content="Premium interactive 3D demo."
+      content="Interactive 3D demo."
     />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,11 +18,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/frontend-ui-experiments/velocity-demo/assets/index--bYahMrt.js"></script>
+    <script type="module" crossorigin src="/frontend-ui-experiments/velocity-demo/assets/index-BgC92Bel.js"></script>
     <link rel="stylesheet" crossorigin href="/frontend-ui-experiments/velocity-demo/assets/index-CbOYmST_.css">
   </head>
   <body>
-    <div class="noise"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-ring"></div>
 
@@ -35,8 +34,8 @@
 
           <div class="geo geo-line geo-line-1" data-speed="0.08"></div>
           <div class="geo geo-line geo-line-2" data-speed="0.12"></div>
-          <div class="geo geo-orb geo-orb-1" data-speed="0.06"></div>
-          <div class="geo geo-orb geo-orb-2" data-speed="0.1"></div>
+          <div class="geo geo-dot geo-dot-1" data-speed="0.05"></div>
+          <div class="geo geo-dot geo-dot-2" data-speed="0.09"></div>
         </div>
 
         <div class="hero-stage">
@@ -47,13 +46,7 @@
               <span class="hero-title-line">Velocity</span>
             </h1>
 
-            <p class="hero-sub">
-              3D. Motion. UI.
-            </p>
-
-            <div class="hero-actions">
-              <a href="#details" class="chip hover-target">Enter</a>
-            </div>
+            <p class="hero-sub">3D / Motion / UI</p>
           </div>
 
           <div class="hero-canvas-shell">
@@ -61,16 +54,28 @@
             <canvas id="webgl"></canvas>
             <div class="canvas-fade"></div>
           </div>
+
+          <div class="hero-meta-left">
+            <span class="meta-chip hover-target">Realtime GLB</span>
+          </div>
+
+          <div class="hero-meta-right">
+            <div class="side-block">
+              <span class="side-label">Mode</span>
+              <span class="side-value">Showcase</span>
+            </div>
+            <div class="side-block side-scroll">
+              <span class="side-label">Scroll</span>
+              <span class="side-line"></span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="panel panel-intro" id="details">
+      <section class="panel" id="details">
         <div class="container">
-          <div class="panel-kicker">About</div>
-          <h2>Motion-first product demo.</h2>
-          <p>
-            Built to showcase interaction, staging, and polish.
-          </p>
+          <div class="panel-kicker">Overview</div>
+          <h2>Motion-first demo.</h2>
         </div>
       </section>
     </div>
