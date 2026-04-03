@@ -7,10 +7,10 @@ export function createHeroScroll(heroScene) {
   const hero = document.getElementById("hero");
 
   document.querySelectorAll("[data-speed]").forEach((el) => {
-    const speed = Number(el.dataset.speed || 0.08);
+    const speed = Number(el.dataset.speed || 0.06);
 
     gsap.to(el, {
-      y: () => window.innerHeight * speed * 1.2,
+      y: () => window.innerHeight * speed,
       ease: "none",
       scrollTrigger: {
         trigger: hero,
@@ -25,7 +25,7 @@ export function createHeroScroll(heroScene) {
     scrollTrigger: {
       trigger: hero,
       start: "top top",
-      end: "+=180%",
+      end: "+=200%",
       pin: true,
       scrub: true,
       anticipatePin: 1,
@@ -38,26 +38,8 @@ export function createHeroScroll(heroScene) {
     .to(
       ".hero-copy",
       {
-        yPercent: 12,
-        opacity: 0.4,
-        ease: "none"
-      },
-      0
-    )
-    .to(
-      ".hero-meta-left",
-      {
-        yPercent: -8,
-        opacity: 0.6,
-        ease: "none"
-      },
-      0
-    )
-    .to(
-      ".hero-meta-right",
-      {
-        yPercent: 10,
-        opacity: 0.35,
+        yPercent: 8,
+        opacity: 0.65,
         ease: "none"
       },
       0
@@ -65,7 +47,7 @@ export function createHeroScroll(heroScene) {
     .to(
       ".model-backlight",
       {
-        scale: 1.14,
+        scale: 1.18,
         opacity: 1,
         ease: "none"
       },
@@ -74,7 +56,7 @@ export function createHeroScroll(heroScene) {
     .to(
       heroScene.model.position,
       {
-        y: heroScene.model.position.y - 0.12,
+        y: heroScene.model.position.y - 0.08,
         ease: "none"
       },
       0
@@ -82,9 +64,9 @@ export function createHeroScroll(heroScene) {
     .to(
       heroScene.model.scale,
       {
-        x: heroScene.baseScale * 1.05,
-        y: heroScene.baseScale * 1.05,
-        z: heroScene.baseScale * 1.05,
+        x: heroScene.baseScale * 1.03,
+        y: heroScene.baseScale * 1.03,
+        z: heroScene.baseScale * 1.03,
         ease: "none"
       },
       0
@@ -94,14 +76,14 @@ export function createHeroScroll(heroScene) {
     ".hero-copy",
     {
       opacity: 0,
-      y: 22
+      y: 18
     },
     {
       opacity: 1,
       y: 0,
-      duration: 1,
+      duration: 1.1,
       ease: "power3.out",
-      delay: 0.12
+      delay: 0.15
     }
   );
 }

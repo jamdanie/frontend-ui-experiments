@@ -139,7 +139,7 @@ function fitModelToView(state) {
   state.model.position.sub(center);
 
   const maxDim = Math.max(size.x, size.y, size.z) || 1;
-  const desired = window.innerWidth < 768 ? 6.5 : 8.5;
+  const desired = window.innerWidth < 768 ? 5.6 : 7.1;
 
   state.baseScale = desired / maxDim;
   state.model.scale.setScalar(state.baseScale);
@@ -157,7 +157,7 @@ function updateCamera(state) {
     state.camera.position.set(0, 0.08, 8.6);
   } else {
     state.camera.fov = 28;
-    state.camera.position.set(0, 0.1, 6.6);
+    state.camera.position.set(0, 0.08, 7.2);
   }
 
   state.camera.updateProjectionMatrix();
