@@ -4,46 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Velocity Demo</title>
-  <link rel="stylesheet" href="./style.css" />
 
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
-  <main class="page-shell">
-    <div class="grain"></div>
 
-    <div class="logo">✕</div>
+  <!-- CLOSE ICON -->
+  <div class="logo">✕</div>
 
-    <section class="hero" id="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">INTERACTIVE DEMO / HANDHELD SERIES</p>
-        <h1>Test...test...test</h1>
-        <p class="subcopy">Portable gaming, reimagined.</p>
-        <p class="instruction">Move / Hover / Scroll</p>
-      </div>
+  <!-- HERO -->
+  <div class="hero-text">
+    <h1>Velocity</h1>
+    <p>Portable gaming, reimagined.</p>
+  </div>
 
-      <div class="hero-visual">
-        <div class="shape shape-a"></div>
-        <div class="shape shape-b"></div>
-        <div class="shape shape-c"></div>
+  <!-- PRODUCT -->
+  <div class="product-wrapper">
+    <img id="product-image" src="p1.jpg" alt="product" />
+  </div>
 
-        <div class="image-stage" id="image-stage">
-          <img class="product-image image-back" id="image-back" src="./p1.jpg" alt="product back layer" />
-          <img class="product-image image-front" id="image-front" src="./p1.jpg" alt="product front layer" />
-        </div>
-      </div>
-    </section>
-
-    <!-- Scroll driver sections -->
-    <section class="panel panel-1"></section>
-    <section class="panel panel-2"></section>
-    <section class="panel panel-3"></section>
-    <section class="panel panel-4"></section>
-    <section class="panel panel-5"></section>
-    <section class="panel panel-6"></section>
-  </main>
-
-  <script src="./script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
