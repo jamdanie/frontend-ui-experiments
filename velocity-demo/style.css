@@ -1,77 +1,59 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velocity Demo</title>
+  <link rel="stylesheet" href="style.css" />
 
-/* BASE */
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f4c400;
-  overflow-x: hidden;
-  height: 500vh;
-}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+  <main class="site-shell">
+    <div class="noise"></div>
 
-/* LOGO */
-.logo {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  font-size: 24px;
-  z-index: 10;
-}
+    <div class="corner-mark">✕</div>
 
-/* HERO TEXT */
-.hero-text {
-  position: fixed;
-  top: 20%;
-  left: 5%;
-  z-index: 5;
-}
+    <section class="hero" id="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">INTERACTIVE DEMO / HANDHELD SERIES</p>
+        <h1 id="hero-title">Velocity</h1>
+        <p class="subcopy">Portable gaming, reimagined.</p>
 
-.hero-text h1 {
-  font-size: 10vw;
-  font-weight: 900;
-  color: black;
-}
+        <div class="meta-row">
+          <span class="instruction">Move / Hover / Scroll</span>
+          <span class="active-label" id="active-label">ARC-01</span>
+        </div>
+      </div>
 
-.hero-text p {
-  font-size: 14px;
-  margin-top: 10px;
-}
+      <div class="hero-visual">
+        <div class="blob blob-a"></div>
+        <div class="blob blob-b"></div>
+        <div class="blob blob-c"></div>
 
-/* PRODUCT */
-.product-wrapper {
-  position: fixed;
-  top: 50%;
-  right: 10%;
-  transform: translateY(-50%);
-  perspective: 1000px;
-}
+        <div class="card-stage" id="card-stage">
+          <div class="card-shadow"></div>
 
-.product-wrapper img {
-  width: 400px;
-  max-width: 80vw;
-  border-radius: 12px;
-  filter: drop-shadow(0 40px 50px rgba(0,0,0,0.4));
-  transition: all 0.4s ease;
-}
+          <div class="product-card card-back" id="card-back">
+            <img id="image-back" src="assets/p1.jpg" alt="Back product layer" />
+          </div>
 
-/* GLITCH */
-.glitch {
-  transform: scale(1.05) skewX(2deg);
-  filter: contrast(1.2) saturate(1.5);
-}
+          <div class="product-card card-front" id="card-front">
+            <img id="image-front" src="assets/p1.jpg" alt="Front product layer" />
+          </div>
+        </div>
+      </div>
+    </section>
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .hero-text h1 {
-    font-size: 18vw;
-  }
+    <section class="panel"></section>
+    <section class="panel"></section>
+    <section class="panel"></section>
+    <section class="panel"></section>
+    <section class="panel"></section>
+    <section class="panel"></section>
+  </main>
 
-  .product-wrapper {
-    right: 50%;
-    transform: translate(50%, -50%);
-  }
-}
+  <script src="script.js"></script>
+</body>
+</html>
