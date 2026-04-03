@@ -1,5 +1,5 @@
-import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
-import { GLTFLoader } from "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "https://esm.sh/three@0.160.0";
+import { GLTFLoader } from "https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -71,7 +71,7 @@ const fillLight = new THREE.PointLight(0xffffff, 1.2, 20);
 fillLight.position.set(0, 1, 3);
 scene.add(fillLight);
 
-// DEBUG OBJECT: always visible, even if model fails
+// fallback object so something always appears
 const debugGeo = new THREE.TorusKnotGeometry(0.7, 0.22, 180, 24);
 const debugMat = new THREE.MeshNormalMaterial();
 const debugMesh = new THREE.Mesh(debugGeo, debugMat);
@@ -92,7 +92,6 @@ loader.load(
     model.position.set(1.15, -0.15, 0);
     model.rotation.set(0.18, -0.72, -0.16);
 
-    // hide debug object once real model loads
     debugMesh.visible = false;
   },
   (progress) => {
@@ -206,7 +205,6 @@ gsap.from(".meta-row", {
 function animate() {
   requestAnimationFrame(animate);
 
-  // keep debug object alive if model isn't loaded
   if (!model && debugMesh.visible) {
     debugMesh.rotation.x += 0.01;
     debugMesh.rotation.y += 0.015;
