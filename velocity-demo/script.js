@@ -1,283 +1,368 @@
-import * as THREE from "https://esm.sh/three@0.160.0";
-import { GLTFLoader } from "https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader";
+import * as THREE from "https://unpkg.com/three@0.161.0/build/three.module.js";
+import { GLTFLoader } from "https://unpkg.com/three@0.161.0/examples/jsm/loaders/GLTFLoader.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const sceneWrap = document.getElementById("sceneWrap");
-const heroTitle = document.getElementById("heroTitle");
-const activePill = document.getElementById("activePill");
-const variantItems = Array.from(document.querySelectorAll(".variant"));
+/* --------------------------------------------
+   LENIS SMOOTH SCROLL
+-------------------------------------------- */
+const lenis = new Lenis({
+  lerp: 0.085,
+  smoothWheel: true,
+  infinite: false
+});
 
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+lenis.on("scroll", ScrollTrigger.update);
+
+gsap.ticker.add((time) => {
+  lenis.raf(time * 1000);
+});
+
+gsap.ticker.lagSmoothing(0);
+
+/* --------------------------------------------
+   CUSTOM CURSOR
+-------------------------------------------- */
 const cursorDot = document.querySelector(".cursor-dot");
 const cursorRing = document.querySelector(".cursor-ring");
+const hoverTargets = document.querySelectorAll(".hover-target");
 
 let mouseX = window.innerWidth * 0.5;
 let mouseY = window.innerHeight * 0.5;
 let ringX = mouseX;
 let ringY = mouseY;
+let dotX = mouseX;
+let dotY = mouseY;
 
-document.addEventListener("mousemove", (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  cursorDot.style.left = `${mouseX}px`;
-  cursorDot.style.top = `${mouseY}px`;
+window.addEventListener("mousemove", (event) => {
+  mouseX = event.clientX;
+  mouseY = event.clientY;
 });
 
-document.addEventListener("mouseover", (e) => {
-  const interactive = e.target.closest("a, button, .hero, .pill, .variant");
-  document.body.classList.toggle("is-hovering", !!interactive);
+hoverTargets.forEach((item) => {
+  item.addEventListener("mouseenter", () => {
+    cursorRing.classList.add("is-hover");
+  });
+
+  item.addEventListener("mouseleave", () => {
+    cursorRing.classList.remove("is-hover");
+  });
 });
 
 function animateCursor() {
-  ringX += (mouseX - ringX) * 0.18;
-  ringY += (mouseY - ringY) * 0.18;
-  cursorRing.style.left = `${ringX}px`;
-  cursorRing.style.top = `${ringY}px`;
+  dotX += (mouseX - dotX) * 0.38;
+  dotY += (mouseY - dotY) * 0.38;
+
+  ringX += (mouseX - ringX) * 0.14;
+  ringY += (mouseY - ringY) * 0.14;
+
+  if (cursorDot && cursorRing && window.innerWidth > 768) {
+    cursorDot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+    cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+  }
+
   requestAnimationFrame(animateCursor);
 }
 animateCursor();
 
+/* --------------------------------------------
+   THREE SETUP
+-------------------------------------------- */
+const canvas = document.getElementById("webgl");
+const hero = document.getElementById("hero");
+
 const scene = new THREE.Scene();
 
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+  powerPreference: "high-performance"
+});
+
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+
 const camera = new THREE.PerspectiveCamera(
-  30,
+  32,
   window.innerWidth / window.innerHeight,
   0.1,
   100
 );
 
-// MUCH farther back
-camera.position.set(0, 0, 12.5);
-
-const renderer = new THREE.WebGLRenderer({
-  antialias: true,
-  alpha: true
-});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-sceneWrap.appendChild(renderer.domElement);
-
-const ambient = new THREE.AmbientLight(0xffffff, 1.8);
-scene.add(ambient);
-
-const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
-keyLight.position.set(4, 5, 6);
-scene.add(keyLight);
-
-const rimLight = new THREE.DirectionalLight(0xffffff, 1.4);
-rimLight.position.set(-4, -1, 3);
-scene.add(rimLight);
-
-const fillLight = new THREE.PointLight(0xffffff, 1.0, 30);
-fillLight.position.set(0, 1.2, 4.5);
-scene.add(fillLight);
+const modelRig = new THREE.Group();
+scene.add(modelRig);
 
 let model = null;
+let targetMouseX = 0;
+let targetMouseY = 0;
+let smoothMouseX = 0;
+let smoothMouseY = 0;
+let scrollProgress = 0;
+let baseRotationY = -0.28;
+let baseRotationX = 0.08;
+let baseScale = 1;
 
-// animate this parent group only
-const heroGroup = new THREE.Group();
-scene.add(heroGroup);
+/* --------------------------------------------
+   LIGHTING
+-------------------------------------------- */
+const ambient = new THREE.AmbientLight(0xffffff, 1.6);
+scene.add(ambient);
 
+const key = new THREE.DirectionalLight(0xffffff, 2.8);
+key.position.set(4, 5, 8);
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xcfd6ff, 1.3);
+fill.position.set(-6, 1, 6);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xffffff, 2.0);
+rim.position.set(-5, 3, -5);
+scene.add(rim);
+
+/* --------------------------------------------
+   MODEL HELPERS
+-------------------------------------------- */
+function refineMaterials(root) {
+  root.traverse((child) => {
+    if (child.isMesh && child.material) {
+      child.castShadow = false;
+      child.receiveShadow = false;
+
+      if ("roughness" in child.material && child.material.roughness !== undefined) {
+        child.material.roughness = Math.min(child.material.roughness + 0.05, 1);
+      }
+
+      if ("metalness" in child.material && child.material.metalness !== undefined) {
+        child.material.metalness = Math.max(child.material.metalness, 0.15);
+      }
+
+      child.material.envMapIntensity = 1.25;
+    }
+  });
+}
+
+function fitModelToView(object3D) {
+  const box = new THREE.Box3().setFromObject(object3D);
+  const size = new THREE.Vector3();
+  const center = new THREE.Vector3();
+
+  box.getSize(size);
+  box.getCenter(center);
+
+  object3D.position.sub(center);
+
+  const maxDim = Math.max(size.x, size.y, size.z) || 1;
+
+  // Larger than before on purpose so it feels premium and dominant
+  const desired = window.innerWidth < 768 ? 4.4 : 5.8;
+  baseScale = desired / maxDim;
+  object3D.scale.setScalar(baseScale);
+
+  // Slight vertical drop so the object sits in the optical center
+  object3D.position.y -= size.y * baseScale * 0.06;
+
+  updateCamera();
+}
+
+function updateCamera() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+
+  if (window.innerWidth < 560) {
+    camera.fov = 36;
+    camera.position.set(0, 0.08, 9.8);
+  } else if (window.innerWidth < 900) {
+    camera.fov = 34;
+    camera.position.set(0, 0.12, 9.1);
+  } else {
+    camera.fov = 32;
+    camera.position.set(0, 0.16, 8.5);
+  }
+
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+}
+
+/* --------------------------------------------
+   LOAD GLB
+-------------------------------------------- */
 const loader = new GLTFLoader();
+
 loader.load(
   "./model/console.glb",
   (gltf) => {
     model = gltf.scene;
+    refineMaterials(model);
+    modelRig.add(model);
 
-    // center model by bounding box
-    const box = new THREE.Box3().setFromObject(model);
-    const size = new THREE.Vector3();
-    const center = new THREE.Vector3();
+    fitModelToView(model);
 
-    box.getSize(size);
-    box.getCenter(center);
+    model.rotation.set(baseRotationX, baseRotationY, 0.02);
 
-    model.position.x -= center.x;
-    model.position.y -= center.y;
-    model.position.z -= center.z;
-
-    // MUCH SMALLER normalized size
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const normalizedScale = 1.75 / maxDim;
-    model.scale.setScalar(normalizedScale);
-
-    // local model tilt
-    model.rotation.set(0.08, -0.45, -0.05);
-
-    heroGroup.add(model);
-
-   // PERFECT CENTER BASE POSITION
-heroGroup.position.set(0, -0.4, 0);   // <-- centered + slightly lowered
-heroGroup.rotation.set(0.02, -0.05, 0);
-heroGroup.scale.setScalar(0.9);
+    buildHeroTimeline();
   },
   undefined,
   (error) => {
-    console.error("Failed to load model:", error);
+    console.error("Error loading GLB:", error);
   }
 );
 
-const labels = [
-  "ICECREAM-01",
-  "ICECREAM-02",
-  "ICECREAM-03",
-  "ICECREAM-04",
-  "ICECREAM-05",
-  "ICECREAM-06"
-];
+/* --------------------------------------------
+   MOUSE INPUT
+-------------------------------------------- */
+window.addEventListener("mousemove", (event) => {
+  const x = event.clientX / window.innerWidth;
+  const y = event.clientY / window.innerHeight;
 
-function setActiveVariant(index) {
-  variantItems.forEach((item, i) => {
-    item.classList.toggle("is-active", i === index);
-  });
+  targetMouseX = (x - 0.5) * 0.16;
+  targetMouseY = (y - 0.5) * 0.1;
+});
 
-  gsap.to(activePill, {
-    opacity: 0,
-    y: 10,
-    duration: 0.12,
-    onComplete: () => {
-      activePill.textContent = labels[index];
-      gsap.to(activePill, {
-        opacity: 1,
-        y: 0,
-        duration: 0.2,
-        ease: "power2.out"
-      });
+/* --------------------------------------------
+   PARALLAX ELEMENTS
+-------------------------------------------- */
+document.querySelectorAll("[data-speed]").forEach((el) => {
+  const speed = Number(el.dataset.speed || 0.08);
+
+  gsap.to(el, {
+    y: () => window.innerHeight * speed * 1.6,
+    ease: "none",
+    scrollTrigger: {
+      trigger: hero,
+      start: "top top",
+      end: "bottom top",
+      scrub: true
     }
   });
+});
+
+/* --------------------------------------------
+   HERO TIMELINE
+-------------------------------------------- */
+function buildHeroTimeline() {
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: hero,
+      start: "top top",
+      end: "+=220%",
+      pin: true,
+      scrub: true,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        scrollProgress = self.progress;
+      }
+    }
+  });
+
+  tl.to(
+    ".hero-copy",
+    {
+      yPercent: 18,
+      opacity: 0.55,
+      ease: "none"
+    },
+    0
+  )
+    .to(
+      ".hero-side",
+      {
+        yPercent: 12,
+        opacity: 0.25,
+        ease: "none"
+      },
+      0
+    )
+    .to(
+      ".model-backlight",
+      {
+        scale: 1.18,
+        opacity: 1,
+        ease: "none"
+      },
+      0
+    )
+    .to(
+      model.position,
+      {
+        y: model.position.y - 0.22,
+        ease: "none"
+      },
+      0
+    )
+    .to(
+      model.scale,
+      {
+        x: baseScale * 1.08,
+        y: baseScale * 1.08,
+        z: baseScale * 1.08,
+        ease: "none"
+      },
+      0
+    );
+
+  gsap.fromTo(
+    ".hero-copy",
+    {
+      opacity: 0,
+      y: 26
+    },
+    {
+      opacity: 1,
+      y: 0,
+      duration: 1.2,
+      ease: "power3.out",
+      delay: 0.15
+    }
+  );
 }
 
-const state = {
-  progress: 0,
-  targetX: 0.95,
-  targetY: -1.45,
-  targetScale: 1,
-  targetRotX: 0.03,
-  targetRotY: -0.12,
-  targetRotZ: 0,
-  activeIndex: 0
-};
+/* --------------------------------------------
+   RENDER LOOP
+-------------------------------------------- */
+const clock = new THREE.Clock();
 
-document.addEventListener("mousemove", (e) => {
-  const nx = e.clientX / window.innerWidth - 0.5;
-  const ny = e.clientY / window.innerHeight - 0.5;
+function tick() {
+  const elapsed = clock.getElapsedTime();
 
-  state.targetRotY = (-0.12 + state.progress * 0.12) + nx * 0.14;
-  state.targetRotX = (0.03 - state.progress * 0.02) + ny * -0.08;
-});
+  smoothMouseX += (targetMouseX - smoothMouseX) * 0.05;
+  smoothMouseY += (targetMouseY - smoothMouseY) * 0.05;
 
-ScrollTrigger.create({
-  trigger: ".site-shell",
-  start: "top top",
-  end: "+=600%",
-  scrub: true,
-  pin: ".hero",
-  pinSpacing: false,
-  onUpdate: (self) => {
-    state.progress = self.progress;
-
-    // very restrained movement
-    // KEEP MODEL CENTERED LIKE BUTTERMAX
-state.targetX = 0;
-state.targetY = -0.4 + self.progress * 0.1;
-state.targetScale = 0.9 + self.progress * 0.05;
-    state.targetRotZ = Math.sin(self.progress * Math.PI * 4) * 0.02;
-
-    gsap.to(heroTitle, {
-      x: self.progress * 85 - 42,
-      y: self.progress * -20,
-      duration: 0.18,
-      overwrite: true
-    });
-
-    gsap.to(".ink-a", {
-      x: self.progress * 90,
-      rotation: -16 + self.progress * 10,
-      duration: 0.18,
-      overwrite: true
-    });
-
-    gsap.to(".ink-b", {
-      x: self.progress * -75,
-      y: self.progress * 32,
-      duration: 0.18,
-      overwrite: true
-    });
-
-    gsap.to(".ink-c", {
-      scale: 1 + self.progress * 0.32,
-      duration: 0.18,
-      overwrite: true
-    });
-
-    gsap.to(".ink-d", {
-      x: self.progress * 55,
-      duration: 0.18,
-      overwrite: true
-    });
-
-    const idx = Math.min(labels.length - 1, Math.floor(self.progress * labels.length));
-    if (idx !== state.activeIndex) {
-      state.activeIndex = idx;
-      setActiveVariant(idx);
-    }
-  }
-});
-
-gsap.from(".eyebrow", {
-  y: 18,
-  opacity: 0,
-  duration: 0.55,
-  ease: "power3.out"
-});
-
-gsap.from("#heroTitle", {
-  y: 90,
-  opacity: 0,
-  duration: 0.95,
-  ease: "power4.out",
-  delay: 0.05
-});
-
-gsap.from(".subcopy", {
-  y: 18,
-  opacity: 0,
-  duration: 0.55,
-  ease: "power3.out",
-  delay: 0.16
-});
-
-gsap.from(".meta", {
-  y: 14,
-  opacity: 0,
-  duration: 0.55,
-  ease: "power3.out",
-  delay: 0.24
-});
-
-function animate() {
-  requestAnimationFrame(animate);
+  modelRig.position.y = Math.sin(elapsed * 0.42) * 0.03;
 
   if (model) {
-    heroGroup.position.x += (state.targetX - heroGroup.position.x) * 0.08;
-    heroGroup.position.y += (state.targetY - heroGroup.position.y) * 0.08;
+    const idleY = Math.sin(elapsed * 0.32) * 0.03;
+    const idleX = Math.cos(elapsed * 0.25) * 0.01;
 
-    heroGroup.rotation.x += (state.targetRotX - heroGroup.rotation.x) * 0.08;
-    heroGroup.rotation.y += (state.targetRotY - heroGroup.rotation.y) * 0.08;
-    heroGroup.rotation.z += (state.targetRotZ - heroGroup.rotation.z) * 0.08;
+    const targetRotY = baseRotationY + (scrollProgress * 0.55) + idleY + smoothMouseX;
+    const targetRotX = baseRotationX + (scrollProgress * 0.06) + idleX - smoothMouseY;
+    const targetRotZ = smoothMouseX * 0.08;
 
-    heroGroup.scale.x += (state.targetScale - heroGroup.scale.x) * 0.08;
-    heroGroup.scale.y += (state.targetScale - heroGroup.scale.y) * 0.08;
-    heroGroup.scale.z += (state.targetScale - heroGroup.scale.z) * 0.08;
+    model.rotation.y += (targetRotY - model.rotation.y) * 0.05;
+    model.rotation.x += (targetRotX - model.rotation.x) * 0.05;
+    model.rotation.z += (targetRotZ - model.rotation.z) * 0.04;
   }
 
   renderer.render(scene, camera);
+  requestAnimationFrame(tick);
 }
-animate();
+tick();
 
+/* --------------------------------------------
+   RESIZE
+-------------------------------------------- */
 window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  updateCamera();
+  ScrollTrigger.refresh();
 });
