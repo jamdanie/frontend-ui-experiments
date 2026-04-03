@@ -5,12 +5,12 @@ gsap.registerPlugin(ScrollTrigger);
 ========================= */
 
 const images = [
-  "p1.jpg",
-  "p2.jpg",
-  "p3.jpg",
-  "p4.jpg",
-  "p5.jpg",
-  "p6.jpg"
+  "assets/p1.jpg",
+  "assets/p2.jpg",
+  "assets/p3.jpg",
+  "assets/p4.jpg",
+  "assets/p5.jpg",
+  "assets/p6.jpg"
 ];
 
 const img = document.getElementById("product-image");
