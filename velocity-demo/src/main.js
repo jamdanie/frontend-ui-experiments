@@ -10,7 +10,7 @@ import { createHeroScroll } from "./motion/heroScroll.js";
 gsap.registerPlugin(ScrollTrigger);
 
 const lenis = new Lenis({
-  lerp: 0.085,
+  lerp: 0.08,
   smoothWheel: true
 });
 

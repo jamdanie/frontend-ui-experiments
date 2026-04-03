@@ -1,22 +1,21 @@
 export function initLiquidCursor() {
-  const canvas = document.getElementById("liquid-cursor");
-  if (!canvas || window.innerWidth <= 768) return;
+  const canvas = document.getElementById("liquid-cursor-canvas");
+  if (!canvas) return;
+  if (window.innerWidth <= 768) return;
 
-  const ctx = canvas.getContext("2d", { alpha: true });
+  const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  let mouseX = width * 0.5;
+  let mouseY = height * 0.5;
+  let currentX = mouseX;
+  let currentY = mouseY;
 
   const blobs = [];
-  let mouseX = window.innerWidth * 0.5;
-  let mouseY = window.innerHeight * 0.5;
-  let smoothX = mouseX;
-  let smoothY = mouseY;
-  let lastX = mouseX;
-  let lastY = mouseY;
-  let hovering = false;
 
   function resize() {
     width = window.innerWidth;
@@ -31,8 +30,8 @@ export function initLiquidCursor() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  function pushBlob(x, y, dx, dy, force = 1) {
-    const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
+  function addBlob(x, y, dx, dy) {
+    const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 50);
 
     blobs.push({
       x,
@@ -40,88 +39,57 @@ export function initLiquidCursor() {
       dx,
       dy,
       life: 1,
-      radius: 24 + speed * 0.9 + (hovering ? 18 : 0),
-      stretch: 1.35 + speed * 0.02
+      radius: 18 + speed * 0.7,
+      stretch: 1 + speed * 0.02,
+      angle: Math.atan2(dy, dx || 0.001)
     });
-
-    if (blobs.length > 32) {
-      blobs.shift();
-    }
   }
 
   window.addEventListener("resize", resize);
 
   window.addEventListener("mousemove", (event) => {
+    const dx = event.clientX - mouseX;
+    const dy = event.clientY - mouseY;
+
     mouseX = event.clientX;
     mouseY = event.clientY;
 
-    const dx = mouseX - lastX;
-    const dy = mouseY - lastY;
-
-    pushBlob(mouseX, mouseY, dx, dy);
-    lastX = mouseX;
-    lastY = mouseY;
-  });
-
-  document.querySelectorAll(".hover-target").forEach((el) => {
-    el.addEventListener("mouseenter", () => {
-      hovering = true;
-    });
-
-    el.addEventListener("mouseleave", () => {
-      hovering = false;
-    });
+    addBlob(mouseX, mouseY, dx, dy);
   });
 
   resize();
 
   function drawBlob(blob) {
-    const angle = Math.atan2(blob.dy, blob.dx || 0.0001);
-
     ctx.save();
     ctx.translate(blob.x, blob.y);
-    ctx.rotate(angle);
+    ctx.rotate(blob.angle);
+    ctx.scale(blob.stretch, 1 / Math.max(blob.stretch, 0.001));
 
-    const rx = blob.radius * blob.stretch;
-    const ry = blob.radius * 0.7;
+    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, blob.radius);
+    gradient.addColorStop(0, `rgba(255,255,255,${0.11 * blob.life})`);
+    gradient.addColorStop(0.35, `rgba(255,255,255,${0.06 * blob.life})`);
+    gradient.addColorStop(1, "rgba(255,255,255,0)");
 
-    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
-    grad.addColorStop(0, `rgba(255,255,255,${0.11 * blob.life})`);
-    grad.addColorStop(0.35, `rgba(255,255,255,${0.07 * blob.life})`);
-    grad.addColorStop(1, "rgba(255,255,255,0)");
-
-    ctx.fillStyle = grad;
+    ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+    ctx.arc(0, 0, blob.radius, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.restore();
   }
 
   function animate() {
-    smoothX += (mouseX - smoothX) * 0.16;
-    smoothY += (mouseY - smoothY) * 0.16;
+    currentX += (mouseX - currentX) * 0.2;
+    currentY += (mouseY - currentY) * 0.2;
 
     ctx.clearRect(0, 0, width, height);
 
-    const idleBlob = {
-      x: smoothX,
-      y: smoothY,
-      dx: mouseX - smoothX,
-      dy: mouseY - smoothY,
-      life: hovering ? 0.85 : 0.55,
-      radius: hovering ? 42 : 28,
-      stretch: hovering ? 1.15 : 1.05
-    };
-
-    drawBlob(idleBlob);
-
     for (let i = blobs.length - 1; i >= 0; i -= 1) {
       const blob = blobs[i];
-      blob.life -= hovering ? 0.026 : 0.036;
-      blob.x += blob.dx * 0.02;
-      blob.y += blob.dy * 0.02;
-      blob.radius *= 0.996;
+
+      blob.life -= 0.03;
+      blob.x += blob.dx * 0.015;
+      blob.y += blob.dy * 0.015;
 
       if (blob.life <= 0) {
         blobs.splice(i, 1);
@@ -130,6 +98,19 @@ export function initLiquidCursor() {
 
       drawBlob(blob);
     }
+
+    const ambient = {
+      x: currentX,
+      y: currentY,
+      dx: 0,
+      dy: 0,
+      life: 0.25,
+      radius: 28,
+      stretch: 1,
+      angle: 0
+    };
+
+    drawBlob(ambient);
 
     requestAnimationFrame(animate);
   }

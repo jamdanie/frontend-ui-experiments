@@ -53,6 +53,16 @@ canvas {
   max-width: 100%;
 }
 
+#liquid-cursor-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  filter: blur(14px) contrast(120%);
+}
+
 .cursor-dot,
 .cursor-ring {
   position: fixed;
@@ -349,7 +359,7 @@ canvas {
 }
 
 .after-hero {
-  padding: 7rem 0 8rem;
+  padding: 5rem 0 5.5rem;
   background: var(--bg);
 }
 
@@ -368,12 +378,12 @@ canvas {
   text-transform: uppercase;
 }
 
-.after-hero h2 {
+.after-copy {
   margin: 0;
-  max-width: 900px;
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 0.98;
-  letter-spacing: -0.06em;
+  max-width: 760px;
+  color: rgba(13, 13, 15, 0.62);
+  font-size: 1.05rem;
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {
@@ -383,7 +393,8 @@ canvas {
   }
 
   .cursor-dot,
-  .cursor-ring {
+  .cursor-ring,
+  #liquid-cursor-canvas {
     display: none;
   }
 
@@ -405,7 +416,7 @@ canvas {
   }
 
   .after-hero {
-    padding: 6rem 0 6.5rem;
+    padding: 4rem 0 4.5rem;
   }
 }
 
@@ -421,5 +432,9 @@ canvas {
   .hero-sub {
     font-size: 0.78rem;
     letter-spacing: 0.14em;
+  }
+
+  .after-copy {
+    font-size: 0.95rem;
   }
 }
