@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { initCursor } from "./ui/cursor.js";
+import { initLiquidCursor } from "./effects/liquidCursor.js";
 import { createHeroScene } from "./scene/heroScene.js";
 import { createHeroScroll } from "./motion/heroScroll.js";
 
@@ -27,6 +28,7 @@ gsap.ticker.add((time) => {
 gsap.ticker.lagSmoothing(0);
 
 initCursor();
+initLiquidCursor();
 
 async function initApp() {
   const heroScene = await createHeroScene({
