@@ -18,13 +18,12 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/frontend-ui-experiments/velocity-demo/assets/index-BP5-z_7Q.js"></script>
-    <link rel="stylesheet" crossorigin href="/frontend-ui-experiments/velocity-demo/assets/index-Cmc1HQ8w.css">
+    <script type="module" crossorigin src="/frontend-ui-experiments/velocity-demo/assets/index-BbJ9kG4f.js"></script>
+    <link rel="stylesheet" crossorigin href="/frontend-ui-experiments/velocity-demo/assets/index-CEoRUVYY.css">
   </head>
   <body>
     <div class="cursor-dot"></div>
     <div class="cursor-ring"></div>
-    <canvas id="distortion-canvas"></canvas>
 
     <div id="app">
       <section class="hero" id="hero">
@@ -33,10 +32,10 @@
           <div class="hero-gradient hero-gradient-2"></div>
           <div class="hero-grid"></div>
 
-          <div class="geo geo-line geo-line-1" data-speed="0.06"></div>
-          <div class="geo geo-line geo-line-2" data-speed="0.08"></div>
-          <div class="geo geo-dot geo-dot-1" data-speed="0.04"></div>
-          <div class="geo geo-dot geo-dot-2" data-speed="0.06"></div>
+          <div class="geo geo-line geo-line-1" data-speed="0.04"></div>
+          <div class="geo geo-line geo-line-2" data-speed="0.06"></div>
+          <div class="geo geo-dot geo-dot-1" data-speed="0.03"></div>
+          <div class="geo geo-dot geo-dot-2" data-speed="0.05"></div>
         </div>
 
         <div class="hero-stage">
@@ -55,13 +54,21 @@
             <canvas id="webgl"></canvas>
             <div class="canvas-fade"></div>
           </div>
+
+          <div class="hero-meta hero-meta-left">
+            <span class="meta-chip hover-target">Realtime GLB</span>
+          </div>
+
+          <div class="hero-meta hero-meta-right">
+            <span class="meta-small">Scroll</span>
+          </div>
         </div>
       </section>
 
-      <section class="panel" id="details">
-        <div class="container">
-          <div class="panel-kicker">Overview</div>
-          <h2>Motion-first demo.</h2>
+      <section class="after-hero" id="details">
+        <div class="after-inner">
+          <span class="after-label">Overview</span>
+          <h2>Motion-first showcase.</h2>
         </div>
       </section>
     </div>

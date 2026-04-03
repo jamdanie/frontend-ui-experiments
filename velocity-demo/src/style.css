@@ -1,13 +1,10 @@
 :root {
   --bg: #f3f0ea;
-  --bg-2: #ece8e0;
   --text: #0d0d0f;
   --muted: rgba(13, 13, 15, 0.56);
   --muted-2: rgba(13, 13, 15, 0.34);
   --line: rgba(13, 13, 15, 0.08);
-  --line-2: rgba(13, 13, 15, 0.12);
   --shadow: 0 20px 80px rgba(0, 0, 0, 0.08);
-  --radius: 24px;
 }
 
 * {
@@ -74,18 +71,6 @@ canvas {
   height: 54px;
 }
 
-#distortion-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9998;
-  mix-blend-mode: screen;
-  opacity: 0.9;
-  filter: blur(16px) contrast(130%);
-}
-
 .hero {
   position: relative;
   height: 100vh;
@@ -117,7 +102,7 @@ canvas {
   position: absolute;
   border-radius: 50%;
   filter: blur(60px);
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .hero-gradient-1 {
@@ -147,7 +132,7 @@ canvas {
 .hero-grid {
   position: absolute;
   inset: 0;
-  opacity: 0.08;
+  opacity: 0.07;
   background-image:
     linear-gradient(rgba(13, 13, 15, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(13, 13, 15, 0.08) 1px, transparent 1px);
@@ -162,11 +147,11 @@ canvas {
 
 .geo-line {
   height: 1px;
-  background: linear-gradient(90deg, rgba(13, 13, 15, 0), rgba(13, 13, 15, 0.32), rgba(13, 13, 15, 0));
+  background: linear-gradient(90deg, rgba(13, 13, 15, 0), rgba(13, 13, 15, 0.28), rgba(13, 13, 15, 0));
 }
 
 .geo-line-1 {
-  width: 280px;
+  width: 260px;
   top: 16%;
   left: 8%;
   transform: rotate(-18deg);
@@ -182,19 +167,19 @@ canvas {
 .geo-dot {
   border-radius: 50%;
   background: #0d0d0f;
-  opacity: 0.9;
+  opacity: 0.88;
 }
 
 .geo-dot-1 {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   top: 22%;
   right: 16%;
 }
 
 .geo-dot-2 {
-  width: 68px;
-  height: 68px;
+  width: 58px;
+  height: 58px;
   bottom: 12%;
   left: 12%;
 }
@@ -238,7 +223,7 @@ canvas {
 }
 
 .hero-sub {
-  margin: 0.5rem 0 0 0.3rem;
+  margin: 0.55rem 0 0 0.3rem;
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 700;
@@ -256,8 +241,8 @@ canvas {
   position: absolute;
   left: 50%;
   top: 53%;
-  width: min(50vw, 760px);
-  height: min(50vw, 760px);
+  width: min(46vw, 700px);
+  height: min(46vw, 700px);
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.18) 26%, rgba(255, 255, 255, 0) 62%);
@@ -280,18 +265,57 @@ canvas {
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 34%, rgba(0, 0, 0, 0.05) 76%, rgba(0, 0, 0, 0.12) 100%);
 }
 
-.panel {
-  position: relative;
-  padding: 9rem 0 10rem;
+.hero-meta {
+  position: absolute;
+  bottom: 2rem;
+  z-index: 5;
+}
+
+.hero-meta-left {
+  left: 0;
+  opacity: 0.78;
+}
+
+.hero-meta-right {
+  right: 0;
+  opacity: 0.55;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  color: rgba(13, 13, 15, 0.68);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.meta-small {
+  color: rgba(13, 13, 15, 0.38);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.after-hero {
+  padding: 8rem 0 9rem;
   background: var(--bg);
 }
 
-.container {
+.after-inner {
   width: min(1200px, calc(100% - 40px));
   margin: 0 auto;
 }
 
-.panel-kicker {
+.after-label {
+  display: block;
   margin-bottom: 0.9rem;
   color: rgba(13, 13, 15, 0.36);
   font-size: 0.72rem;
@@ -300,7 +324,7 @@ canvas {
   text-transform: uppercase;
 }
 
-.panel h2 {
+.after-hero h2 {
   margin: 0;
   font-size: clamp(2.4rem, 6vw, 5rem);
   line-height: 0.95;
@@ -314,8 +338,7 @@ canvas {
   }
 
   .cursor-dot,
-  .cursor-ring,
-  #distortion-canvas {
+  .cursor-ring {
     display: none;
   }
 
@@ -332,7 +355,11 @@ canvas {
     width: 92%;
   }
 
-  .panel {
+  .hero-meta-right {
+    display: none;
+  }
+
+  .after-hero {
     padding: 6.5rem 0 7rem;
   }
 }
