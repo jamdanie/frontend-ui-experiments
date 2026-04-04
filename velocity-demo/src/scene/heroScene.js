@@ -30,7 +30,7 @@ export async function createHeroScene({ canvas, modelUrl }) {
   const ambient = new THREE.AmbientLight(0xffffff, 1.5);
   scene.add(ambient);
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.7);
+  const key = new THREE.DirectionalLight(0xffffff, 2.75);
   key.position.set(5, 6, 8);
   scene.add(key);
 
@@ -56,7 +56,7 @@ export async function createHeroScene({ canvas, modelUrl }) {
     modelRig,
     model,
     scrollProgress: 0,
-    baseRotationX: 0.035,
+    baseRotationX: 0.03,
     baseScale: 1,
     targetMouseX: 0,
     targetMouseY: 0,
@@ -73,8 +73,8 @@ export async function createHeroScene({ canvas, modelUrl }) {
     const x = event.clientX / window.innerWidth;
     const y = event.clientY / window.innerHeight;
 
-    state.targetMouseX = (x - 0.5) * 0.025;
-    state.targetMouseY = (y - 0.5) * 0.012;
+    state.targetMouseX = (x - 0.5) * 0.02;
+    state.targetMouseY = (y - 0.5) * 0.01;
   });
 
   window.addEventListener("resize", () => {
@@ -87,18 +87,21 @@ export async function createHeroScene({ canvas, modelUrl }) {
     state.smoothMouseX += (state.targetMouseX - state.smoothMouseX) * 0.05;
     state.smoothMouseY += (state.targetMouseY - state.smoothMouseY) * 0.05;
 
-    modelRig.position.y = Math.sin(elapsed * 0.38) * 0.015;
+    modelRig.position.y = Math.sin(elapsed * 0.36) * 0.014;
 
-    const autoYaw = elapsed * 0.18;
-    const scrollYaw = state.scrollProgress * 0.14;
-    const mouseYaw = state.smoothMouseX;
+    const autoYaw = elapsed * 0.2;
+    const scrollYaw = state.scrollProgress * 0.18;
+    const mouseYaw = state.smoothMouseX * 0.9;
     const targetYaw = autoYaw + scrollYaw + mouseYaw;
 
     const idleX = Math.cos(elapsed * 0.22) * 0.003;
+    const breathe = Math.sin(elapsed * 0.8) * 0.008;
 
     model.rotation.y += (targetYaw - model.rotation.y) * 0.06;
-    model.rotation.x += ((state.baseRotationX + idleX - state.smoothMouseY) - model.rotation.x) * 0.05;
+    model.rotation.x += ((state.baseRotationX + idleX - state.smoothMouseY * 0.6) - model.rotation.x) * 0.05;
     model.rotation.z += ((state.smoothMouseX * 0.02) - model.rotation.z) * 0.04;
+
+    model.scale.setScalar(state.baseScale * (1 + breathe));
 
     renderer.render(scene, camera);
     requestAnimationFrame(tick);

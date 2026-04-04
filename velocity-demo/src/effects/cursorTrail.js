@@ -1,114 +1,56 @@
-export function initCursorTrail() {
-  const canvas = document.getElementById("distortion-canvas");
-  if (!canvas) return;
+export function initCursor() {
+  const dot = document.querySelector(".cursor-dot");
+  const ring = document.querySelector(".cursor-ring");
 
-  const ctx = canvas.getContext("2d", { alpha: true });
-  if (!ctx) return;
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
 
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let currentX = mouseX;
+  let currentY = mouseY;
 
-  const points = [];
-  let mouseX = width * 0.5;
-  let mouseY = height * 0.5;
-  let lastX = mouseX;
-  let lastY = mouseY;
-  let active = false;
+  let velocityX = 0;
+  let velocityY = 0;
 
-  function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    canvas.width = Math.floor(width * dpr);
-    canvas.height = Math.floor(height * dpr);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function addPoint(x, y) {
-    const dx = x - lastX;
-    const dy = y - lastY;
-    const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 60);
-
-    points.push({
-      x,
-      y,
-      dx,
-      dy,
-      speed,
-      life: 1,
-      size: 24 + speed * 0.9
-    });
-
-    lastX = x;
-    lastY = y;
-  }
-
-  window.addEventListener("resize", resize);
-
-  window.addEventListener("mousemove", (event) => {
-    mouseX = event.clientX;
-    mouseY = event.clientY;
-    active = true;
-    addPoint(mouseX, mouseY);
+  window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
   });
-
-  window.addEventListener("mouseleave", () => {
-    active = false;
-  });
-
-  resize();
-
-  function drawBlob(point) {
-    const angle = Math.atan2(point.dy, point.dx || 0.0001);
-
-    ctx.save();
-    ctx.translate(point.x, point.y);
-    ctx.rotate(angle);
-
-    const w = point.size * 1.6;
-    const h = Math.max(point.size * 0.55, 12);
-
-    const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, w);
-    grad.addColorStop(0, `rgba(255,255,255,${0.14 * point.life})`);
-    grad.addColorStop(0.35, `rgba(255,255,255,${0.08 * point.life})`);
-    grad.addColorStop(1, "rgba(255,255,255,0)");
-
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, w, h, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
 
   function animate() {
-    ctx.clearRect(0, 0, width, height);
+    // smooth follow
+    const dx = mouseX - currentX;
+    const dy = mouseY - currentY;
 
-    for (let i = points.length - 1; i >= 0; i -= 1) {
-      const p = points[i];
-      p.life -= 0.03;
-      p.x += p.dx * 0.02;
-      p.y += p.dy * 0.02;
+    velocityX = dx * 0.15;
+    velocityY = dy * 0.15;
 
-      if (p.life <= 0) {
-        points.splice(i, 1);
-        continue;
-      }
+    currentX += velocityX;
+    currentY += velocityY;
 
-      drawBlob(p);
-    }
+    // stretch based on velocity
+    const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
+    const stretch = 1 + speed * 0.015;
 
-    if (active && points.length < 2) {
-      addPoint(mouseX, mouseY);
-    }
+    dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+
+    ring.style.transform = `
+      translate(${currentX}px, ${currentY}px)
+      translate(-50%, -50%)
+      scale(${stretch}, ${1 / stretch})
+    `;
 
     requestAnimationFrame(animate);
   }
 
   animate();
+
+  // hover interactions
+  document.querySelectorAll(".hover-target").forEach((el) => {
+    el.addEventListener("mouseenter", () => {
+      ring.classList.add("is-hover");
+    });
+    el.addEventListener("mouseleave", () => {
+      ring.classList.remove("is-hover");
+    });
+  });
 }

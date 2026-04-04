@@ -21,11 +21,29 @@ export function createHeroScroll(heroScene) {
     });
   });
 
+  gsap.to(".geo", {
+    y: "+=10",
+    duration: 4.2,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true,
+    stagger: 0.2
+  });
+
+  gsap.to(".model-halo", {
+    scale: 1.04,
+    opacity: 0.9,
+    duration: 3.4,
+    ease: "sine.inOut",
+    repeat: -1,
+    yoyo: true
+  });
+
   gsap.timeline({
     scrollTrigger: {
       trigger: hero,
       start: "top top",
-      end: "+=190%",
+      end: "+=195%",
       pin: true,
       scrub: true,
       anticipatePin: 1,
@@ -38,7 +56,7 @@ export function createHeroScroll(heroScene) {
     .to(
       ".hero-copy",
       {
-        yPercent: 10,
+        yPercent: 9,
         opacity: 0.6,
         ease: "none"
       },
@@ -47,8 +65,8 @@ export function createHeroScroll(heroScene) {
     .to(
       ".hero-meta-left",
       {
-        yPercent: -6,
-        opacity: 0.55,
+        yPercent: -5,
+        opacity: 0.5,
         ease: "none"
       },
       0
@@ -57,7 +75,7 @@ export function createHeroScroll(heroScene) {
       ".hero-meta-right",
       {
         yPercent: 8,
-        opacity: 0.3,
+        opacity: 0.28,
         ease: "none"
       },
       0
@@ -65,8 +83,17 @@ export function createHeroScroll(heroScene) {
     .to(
       ".model-backlight",
       {
-        scale: 1.12,
+        scale: 1.13,
         opacity: 1,
+        ease: "none"
+      },
+      0
+    )
+    .to(
+      ".model-halo",
+      {
+        scale: 1.1,
+        opacity: 0.7,
         ease: "none"
       },
       0
@@ -74,7 +101,7 @@ export function createHeroScroll(heroScene) {
     .to(
       heroScene.model.position,
       {
-        y: heroScene.model.position.y - 0.1,
+        y: heroScene.model.position.y - 0.09,
         ease: "none"
       },
       0
@@ -94,7 +121,7 @@ export function createHeroScroll(heroScene) {
     ".hero-copy",
     {
       opacity: 0,
-      y: 20
+      y: 18
     },
     {
       opacity: 1,
@@ -109,7 +136,7 @@ export function createHeroScroll(heroScene) {
     ".hero-meta",
     {
       opacity: 0,
-      y: 14
+      y: 12
     },
     {
       opacity: 1,

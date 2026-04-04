@@ -56,11 +56,13 @@ canvas {
 #liquid-cursor-canvas {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
   z-index: 9997;
   opacity: 1;
-  mix-blend-mode: screen;
-  filter: blur(10px) contrast(145%) saturate(115%);
+  mix-blend-mode: multiply;
+  filter: blur(0px) contrast(160%) saturate(100%);
 }
 
 .cursor-dot,
