@@ -12,11 +12,11 @@ export function initLiquidCursor() {
 
   let mouseX = window.innerWidth * 0.5;
   let mouseY = window.innerHeight * 0.5;
-  let targetX = mouseX;
-  let targetY = mouseY;
+  let currentX = mouseX;
+  let currentY = mouseY;
 
-  const blobs = [];
-  const maxBlobs = 28;
+  const particles = [];
+  const maxParticles = 36;
 
   function resize() {
     width = window.innerWidth;
@@ -31,48 +31,69 @@ export function initLiquidCursor() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  function addBlob(x, y, dx, dy) {
-    const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 42);
+  function spawnSplash(x, y, dx, dy) {
+    const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 45);
 
-    blobs.push({
-      x,
-      y,
-      dx,
-      dy,
-      life: 1,
-      radius: 24 + speed * 0.55,
-      stretch: 1 + speed * 0.018,
-      angle: Math.atan2(dy, dx || 0.001),
-      drift: 0.985 + Math.random() * 0.008
-    });
+    if (speed < 0.5) return;
 
-    if (blobs.length > maxBlobs) {
-      blobs.shift();
+    const count = Math.max(2, Math.min(5, Math.floor(speed * 0.12)));
+
+    for (let i = 0; i < count; i += 1) {
+      const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.9;
+      const velocity = 0.6 + Math.random() * (speed * 0.12);
+
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * velocity,
+        vy: Math.sin(angle) * velocity,
+        radius: 18 + Math.random() * 20 + speed * 0.18,
+        life: 1,
+        decay: 0.018 + Math.random() * 0.016
+      });
+    }
+
+    while (particles.length > maxParticles) {
+      particles.shift();
     }
   }
 
-  function drawBlob(blob) {
-    ctx.save();
-    ctx.translate(blob.x, blob.y);
-    ctx.rotate(blob.angle);
-    ctx.scale(blob.stretch, 1 / Math.max(blob.stretch, 0.001));
-
-    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, blob.radius);
-    gradient.addColorStop(0, `rgba(255,255,255,${0.09 * blob.life})`);
-    gradient.addColorStop(0.22, `rgba(255,255,255,${0.055 * blob.life})`);
-    gradient.addColorStop(0.55, `rgba(255,255,255,${0.02 * blob.life})`);
+  function drawParticle(p) {
+    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+    gradient.addColorStop(0, `rgba(255,255,255,${0.18 * p.life})`);
+    gradient.addColorStop(0.25, `rgba(255,255,255,${0.12 * p.life})`);
+    gradient.addColorStop(0.6, `rgba(255,255,255,${0.05 * p.life})`);
     gradient.addColorStop(1, "rgba(255,255,255,0)");
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.arc(0, 0, blob.radius, 0, Math.PI * 2);
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
     ctx.fill();
-
-    ctx.restore();
   }
 
-  function onResize() {
-    resize();
+  function drawCoreGlow() {
+    const gradient = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 42);
+    gradient.addColorStop(0, "rgba(255,255,255,0.24)");
+    gradient.addColorStop(0.35, "rgba(255,255,255,0.14)");
+    gradient.addColorStop(0.7, "rgba(255,255,255,0.04)");
+    gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(currentX, currentY, 42, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawHalo() {
+    const gradient = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 110);
+    gradient.addColorStop(0, "rgba(255,255,255,0.06)");
+    gradient.addColorStop(0.45, "rgba(255,255,255,0.035)");
+    gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(currentX, currentY, 110, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   function onMouseMove(event) {
@@ -82,63 +103,42 @@ export function initLiquidCursor() {
     mouseX = event.clientX;
     mouseY = event.clientY;
 
-    addBlob(mouseX, mouseY, dx, dy);
-  }
-
-  function drawBackgroundGlow() {
-    const glow = ctx.createRadialGradient(targetX, targetY, 0, targetX, targetY, 120);
-    glow.addColorStop(0, "rgba(255,255,255,0.035)");
-    glow.addColorStop(0.45, "rgba(255,255,255,0.018)");
-    glow.addColorStop(1, "rgba(255,255,255,0)");
-
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(targetX, targetY, 120, 0, Math.PI * 2);
-    ctx.fill();
+    spawnSplash(mouseX, mouseY, dx, dy);
   }
 
   function animate() {
-    targetX += (mouseX - targetX) * 0.16;
-    targetY += (mouseY - targetY) * 0.16;
+    currentX += (mouseX - currentX) * 0.18;
+    currentY += (mouseY - currentY) * 0.18;
 
     ctx.clearRect(0, 0, width, height);
 
-    drawBackgroundGlow();
+    drawHalo();
 
-    for (let i = blobs.length - 1; i >= 0; i -= 1) {
-      const blob = blobs[i];
+    for (let i = particles.length - 1; i >= 0; i -= 1) {
+      const p = particles[i];
 
-      blob.life -= 0.032;
-      blob.x += blob.dx * 0.018;
-      blob.y += blob.dy * 0.018;
-      blob.dx *= blob.drift;
-      blob.dy *= blob.drift;
-      blob.radius *= 0.996;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.985;
+      p.vy *= 0.985;
+      p.radius *= 0.992;
+      p.life -= p.decay;
 
-      if (blob.life <= 0.01 || blob.radius <= 2) {
-        blobs.splice(i, 1);
+      if (p.life <= 0.02 || p.radius <= 1.5) {
+        particles.splice(i, 1);
         continue;
       }
 
-      drawBlob(blob);
+      drawParticle(p);
     }
 
-    const ambientBlob = {
-      x: targetX,
-      y: targetY,
-      life: 0.36,
-      radius: 34,
-      stretch: 1,
-      angle: 0
-    };
-
-    drawBlob(ambientBlob);
+    drawCoreGlow();
 
     requestAnimationFrame(animate);
   }
 
   resize();
-  window.addEventListener("resize", onResize);
+  window.addEventListener("resize", resize);
   window.addEventListener("mousemove", onMouseMove, { passive: true });
 
   animate();

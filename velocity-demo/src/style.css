@@ -58,9 +58,9 @@ canvas {
   inset: 0;
   pointer-events: none;
   z-index: 9997;
-  opacity: 0.95;
+  opacity: 1;
   mix-blend-mode: screen;
-  filter: blur(16px) contrast(122%) saturate(104%);
+  filter: blur(10px) contrast(145%) saturate(115%);
 }
 
 .cursor-dot,
@@ -387,15 +387,11 @@ canvas {
 }
 
 .glitch {
-  color: #0d0d0f;
-  font-size: inherit;
-  white-space: nowrap;
-  font-weight: inherit;
   position: relative;
-  margin: 0;
-  user-select: none;
-  cursor: pointer;
   display: inline-block;
+  color: #0d0d0f;
+  white-space: nowrap;
+  user-select: none;
   line-height: inherit;
 }
 
@@ -404,7 +400,6 @@ canvas {
   content: attr(data-text);
   position: absolute;
   top: 0;
-  left: 0;
   color: #0d0d0f;
   background-color: transparent;
   overflow: hidden;
@@ -414,13 +409,13 @@ canvas {
 
 .glitch:not(.enable-on-hover)::after {
   left: 10px;
-  text-shadow: var(--after-shadow, -10px 0 red);
+  text-shadow: var(--after-shadow, -5px 0 red);
   animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
 }
 
 .glitch:not(.enable-on-hover)::before {
   left: -10px;
-  text-shadow: var(--before-shadow, 10px 0 cyan);
+  text-shadow: var(--before-shadow, 5px 0 cyan);
   animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
 }
 
@@ -435,7 +430,7 @@ canvas {
   content: attr(data-text);
   opacity: 1;
   left: 10px;
-  text-shadow: var(--after-shadow, -10px 0 red);
+  text-shadow: var(--after-shadow, -5px 0 red);
   animation: animate-glitch var(--after-duration, 3s) infinite linear alternate-reverse;
 }
 
@@ -443,7 +438,7 @@ canvas {
   content: attr(data-text);
   opacity: 1;
   left: -10px;
-  text-shadow: var(--before-shadow, 10px 0 cyan);
+  text-shadow: var(--before-shadow, 5px 0 cyan);
   animation: animate-glitch var(--before-duration, 2s) infinite linear alternate-reverse;
 }
 
