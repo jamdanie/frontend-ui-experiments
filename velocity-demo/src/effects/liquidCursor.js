@@ -15,10 +15,8 @@ export function initLiquidCursor() {
   let targetX = mouseX;
   let targetY = mouseY;
 
-  let rafId = 0;
-
   const blobs = [];
-  const maxBlobs = 24;
+  const maxBlobs = 28;
 
   function resize() {
     width = window.innerWidth;
@@ -128,8 +126,6 @@ export function initLiquidCursor() {
     const ambientBlob = {
       x: targetX,
       y: targetY,
-      dx: 0,
-      dy: 0,
       life: 0.36,
       radius: 34,
       stretch: 1,
@@ -138,7 +134,7 @@ export function initLiquidCursor() {
 
     drawBlob(ambientBlob);
 
-    rafId = window.requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
   }
 
   resize();

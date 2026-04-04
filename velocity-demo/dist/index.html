@@ -18,8 +18,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <script type="module" crossorigin src="/frontend-ui-experiments/velocity-demo/assets/index-BbHEyCNZ.js"></script>
-    <link rel="stylesheet" crossorigin href="/frontend-ui-experiments/velocity-demo/assets/index-pvtc7KaO.css">
+    <script type="module" crossorigin src="/frontend-ui-experiments/velocity-demo/assets/index-BZ-UWddE.js"></script>
+    <link rel="stylesheet" crossorigin href="/frontend-ui-experiments/velocity-demo/assets/index-DltpGETT.css">
   </head>
   <body>
     <canvas id="liquid-cursor-canvas"></canvas>
@@ -44,8 +44,17 @@
           <div class="hero-copy">
             <div class="eyebrow hover-target magnetic">Interactive Demo</div>
 
-            <h1 class="hero-title hover-target" data-text="Velocity">
-              <span class="hero-title-line glitch enable-on-hover" data-text="Velocity">
+            <h1 class="hero-title hover-target">
+              <span
+                class="hero-title-line glitch custom-class"
+                data-text="Velocity"
+                style="
+                  --after-duration: 3s;
+                  --before-duration: 2s;
+                  --after-shadow: -5px 0 red;
+                  --before-shadow: 5px 0 cyan;
+                "
+              >
                 Velocity
               </span>
             </h1>
