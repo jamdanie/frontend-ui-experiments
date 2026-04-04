@@ -27,16 +27,23 @@ gsap.ticker.add((time) => {
 });
 gsap.ticker.lagSmoothing(0);
 
+console.log("[main] starting app");
+
 initCursor();
 initLiquidCursor();
 
 async function initApp() {
+  const canvas = document.getElementById("webgl");
+
+  console.log("[main] webgl canvas found:", !!canvas);
+
   const heroScene = await createHeroScene({
-    canvas: document.getElementById("webgl"),
+    canvas,
     modelUrl: `${import.meta.env.BASE_URL}model/console.glb`
   });
 
   createHeroScroll(heroScene);
+  console.log("[main] hero scene initialized");
 }
 
 initApp().catch((error) => {
