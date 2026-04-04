@@ -8,6 +8,7 @@ A curated collection of small front-end studies, layout labs, and visual interfa
 
 | Project | Live Demo |
 |--------|-----------|
+| Motion / GLB / UI | https://jamdanie.github.io/frontend-ui-experiments/velocity-demo/
 | Dark Premium Portfolio | https://jamdanie.github.io/frontend-ui-experiments/dark-premium-portfolio/ |
 | Layout Practice | https://jamdanie.github.io/frontend-ui-experiments/layout-practice/ |
 | Mecha UI Concept | https://jamdanie.github.io/frontend-ui-experiments/mecha-ui-concept/ |
