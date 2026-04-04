@@ -16,32 +16,34 @@ export function initCursor() {
   let stretchX = 1;
   let stretchY = 1;
 
-  window.addEventListener("mousemove", (event) => {
+  function onMouseMove(event) {
     mouseX = event.clientX;
     mouseY = event.clientY;
-  });
+  }
+
+  window.addEventListener("mousemove", onMouseMove, { passive: true });
 
   function animateCursor() {
     const dx = mouseX - ringX;
     const dy = mouseY - ringY;
     const speed = Math.min(Math.sqrt(dx * dx + dy * dy), 60);
 
-    dotX += (mouseX - dotX) * 0.36;
-    dotY += (mouseY - dotY) * 0.36;
+    dotX += (mouseX - dotX) * 0.38;
+    dotY += (mouseY - dotY) * 0.38;
 
-    ringX += dx * 0.15;
-    ringY += dy * 0.15;
+    ringX += dx * 0.14;
+    ringY += dy * 0.14;
 
-    const targetStretchX = 1 + speed * 0.012;
-    const targetStretchY = 1 - speed * 0.006;
+    const targetStretchX = 1 + speed * 0.01;
+    const targetStretchY = 1 - speed * 0.0045;
 
-    stretchX += (targetStretchX - stretchX) * 0.16;
-    stretchY += (targetStretchY - stretchY) * 0.16;
+    stretchX += (targetStretchX - stretchX) * 0.14;
+    stretchY += (targetStretchY - stretchY) * 0.14;
 
     dot.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
     ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%) scale(${stretchX}, ${stretchY})`;
 
-    requestAnimationFrame(animateCursor);
+    window.requestAnimationFrame(animateCursor);
   }
 
   animateCursor();
