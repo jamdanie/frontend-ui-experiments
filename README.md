@@ -28,7 +28,7 @@ This repository groups together several smaller projects that focus on:
 - motion and interaction
 - aesthetic experimentation
 - front-end practice without heavy frameworks
-
+ 
 These projects are **learning-focused UI studies**, not production applications.
 
 ---
