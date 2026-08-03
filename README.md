@@ -18,7 +18,7 @@ Click any demo above to view the project.
 
 ---
 
-# About This Repository  
+# About This Repository   
 
 This repository groups together several smaller projects that focus on:
 
